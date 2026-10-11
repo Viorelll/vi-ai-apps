@@ -1,0 +1,78 @@
+name: docuai
+x-api-env: &api-env
+  ASPNETCORE_HTTP_PORTS: "8080"
+  ConnectionStrings__App: Host=db;Database=docuai;Username=docuai;Password=${DB_PASSWORD:?set DB_PASSWORD}
+  Storage__Endpoint: http://minio:9000
+  Storage__AccessKey: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER}
+  Storage__SecretKey: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+  Storage__Bucket: docuai
+  Ai__BaseUrl: http://ai:8080/
+  Internal__Key: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: docuai
+      POSTGRES_USER: docuai
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U docuai -d docuai"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    restart: unless-stopped
+  minio:
+    build: {context: ., dockerfile: deploy/Minio.Dockerfile}
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+    volumes: ["objectdata:/data"]
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    restart: unless-stopped
+  ai:
+    build: {context: ., dockerfile: deploy/Ai.Dockerfile}
+    environment:
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Internal__Key: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
+      ContentUnderstanding__Endpoint: ${CU_ENDPOINT:-}
+      ContentUnderstanding__ApiKey: ${CU_API_KEY:-}
+      ContentUnderstanding__Analyzer: prebuilt-documentSearch
+    healthcheck:
+      test: ["CMD","/bin/sh","-c","wget -q -O /dev/null http://localhost:8080/health/live"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+  migrate:
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    environment: *api-env
+    command: ["--migrate"]
+    depends_on:
+      db: {condition: service_healthy}
+      minio: {condition: service_healthy}
+    restart: "no"
+  api:
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    environment:
+      <<: *api-env
+      Foundry__OpenAiEndpoint: ${FOUNDRY_OPENAI_ENDPOINT:-}
+      Foundry__ApiKey: ${FOUNDRY_API_KEY:-}
+      Foundry__ChatDeployment: ${CHAT_DEPLOYMENT:-docuai-chat}
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      minio: {condition: service_healthy}
+      ai: {condition: service_healthy}
+    restart: unless-stopped
+  web:
+    build: {context: ., dockerfile: deploy/Web.Dockerfile}
+    ports: ["127.0.0.1:8080:80"]
+    depends_on: [api]
+    restart: unless-stopped
+volumes:
+  pgdata:
+  objectdata:
