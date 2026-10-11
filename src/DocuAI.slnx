@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="DocuAI.Ai/DocuAI.Ai.csproj" />
+  <Project Path="DocuAI.Api/DocuAI.Api.csproj" />
+  <Project Path="DocuAI.Application/DocuAI.Application.csproj" />
+  <Project Path="DocuAI.Database/DocuAI.Database.csproj" />
+  <Project Path="DocuAI.Domain/DocuAI.Domain.csproj" />
+  <Project Path="DocuAI.Infrastructure/DocuAI.Infrastructure.csproj" />
+</Solution>

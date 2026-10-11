@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY src/DocuAI.Api/ ./
-RUN dotnet restore DocuAI.Api.csproj
-RUN dotnet publish DocuAI.Api.csproj -c Release --no-restore -o /out
+COPY src/ ./src/
+RUN dotnet restore src/DocuAI.Api/DocuAI.Api.csproj
+RUN dotnet publish src/DocuAI.Api/DocuAI.Api.csproj -c Release --no-restore -o /out
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /out/ ./
