@@ -5,7 +5,7 @@ Aplicație .NET 10 + React/TypeScript pentru facturi și bonuri, implementată d
 ## Pornire
 
 ```bash
-cd InvoiceAI
+cd 03-InvoiceAI
 cp .env.example .env   # numai dacă .env nu există
 # Mod demo, fără resurse Azure:
 docker compose up -d --build
