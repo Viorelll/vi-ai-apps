@@ -1,0 +1,71 @@
+name: ShopVisionAI
+
+on:
+  push:
+    paths:
+      - "14-shopvision-ai/**"
+      - ".github/workflows/shopvision-ai.yml"
+  pull_request:
+    paths:
+      - "14-shopvision-ai/**"
+      - ".github/workflows/shopvision-ai.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.401"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.12.0"
+          cache: npm
+          cache-dependency-path: 14-shopvision-ai/src/shopvisionai-web/package-lock.json
+      - name: Restore and build backend
+        working-directory: 14-shopvision-ai
+        run: dotnet restore --locked-mode && dotnet build --no-restore
+      - name: Check C# formatting
+        working-directory: 14-shopvision-ai
+        run: dotnet format --verify-no-changes --no-restore
+      - name: Start PostgreSQL, MinIO, Foundry gateway, API and web
+        working-directory: 14-shopvision-ai
+        env:
+          AI_MODE: Demo
+        run: docker compose -f compose.yaml -f compose.test.yaml up --build -d
+      - name: Wait for application readiness
+        working-directory: 14-shopvision-ai
+        run: |
+          for attempt in $(seq 1 90); do
+            if curl --fail --silent http://127.0.0.1:8080/api/health/ready; then exit 0; fi
+            sleep 2
+          done
+          docker compose logs --no-color
+          exit 1
+      - name: Run PostgreSQL and S3 integration tests
+        working-directory: 14-shopvision-ai
+        env:
+          SHOPVISION_TEST_DB: Host=localhost;Port=15432;Database=shopvisionai_tests;Username=shopvisionai;Password=dummy-local-database-password
+          SHOPVISION_TEST_S3: http://localhost:19000
+        run: dotnet test --no-restore --logger "trx;LogFileName=shopvision.trx"
+      - name: Verify API and storage smoke flow
+        working-directory: 14-shopvision-ai
+        run: python3 scripts/smoke.py --base http://127.0.0.1:8080
+      - name: Install frontend dependencies and run checks
+        working-directory: 14-shopvision-ai/src/shopvisionai-web
+        run: npm ci && npm run build && npm test && npm run format:check
+      - name: Install Chromium and run desktop/mobile E2E
+        working-directory: 14-shopvision-ai/src/shopvisionai-web
+        run: npx playwright install --with-deps chromium && SHOPVISION_WEB_URL=http://127.0.0.1:8080 npm run test:e2e
+      - name: Check formatting and vulnerability audit
+        working-directory: 14-shopvision-ai/src/shopvisionai-web
+        run: npm audit --audit-level=high
+      - name: Stop services
+        if: always()
+        working-directory: 14-shopvision-ai
+        run: docker compose -f compose.yaml -f compose.test.yaml down

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup></PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="../ShopVisionAI.Domain/ShopVisionAI.Domain.csproj" />
+        <ProjectReference Include="../ShopVisionAI.Contracts/ShopVisionAI.Contracts.csproj" />
+        <ProjectReference Include="../ShopVisionAI.Database/ShopVisionAI.Database.csproj" />
+        <ProjectReference Include="../ShopVisionAI.Infrastructure/ShopVisionAI.Infrastructure.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+</Project>

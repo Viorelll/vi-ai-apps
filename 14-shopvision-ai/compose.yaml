@@ -1,0 +1,76 @@
+name: shopvisionai
+x-api-env: &api-env
+  ASPNETCORE_HTTP_PORTS: "8080"
+  ConnectionStrings__App: Host=db;Database=shopvisionai;Username=shopvisionai;Password=${DB_PASSWORD:-dummy-local-database-password}
+  Storage__Endpoint: http://minio:9000
+  Storage__AccessKey: ${MINIO_ROOT_USER:-shopvision-local}
+  Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-dummy-local-storage-password}
+  Storage__Bucket: shopvisionai
+  Ai__BaseUrl: http://ai:8080/
+  Internal__Key: ${INTERNAL_API_KEY:-dummy-local-internal-secret-change-me}
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: shopvisionai
+      POSTGRES_USER: shopvisionai
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dummy-local-database-password}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U shopvisionai -d shopvisionai"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  minio:
+    build: {context: ., dockerfile: deploy/Minio.Dockerfile}
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-shopvision-local}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-dummy-local-storage-password}
+    volumes: [objectdata:/data]
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:9000/minio/health/live]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  ai:
+    build: {context: ., dockerfile: deploy/Ai.Dockerfile}
+    environment:
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Internal__Key: ${INTERNAL_API_KEY:-dummy-local-internal-secret-change-me}
+      Storage__Endpoint: http://minio:9000
+      Storage__AccessKey: ${MINIO_ROOT_USER:-shopvision-local}
+      Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-dummy-local-storage-password}
+      Storage__Bucket: shopvisionai
+      Foundry__Mode: ${AI_MODE:-Foundry}
+      Foundry__Endpoint: ${FOUNDRY_OPENAI_ENDPOINT:-https://RESOURCE.openai.azure.com/openai/v1/}
+      Foundry__ApiKey: ${FOUNDRY_API_KEY:-dummy-replace-with-resource-key}
+      Foundry__Deployment: ${CHAT_DEPLOYMENT:-dummy-vision-deployment}
+    depends_on:
+      minio: {condition: service_healthy}
+    restart: unless-stopped
+  migrate:
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    environment: *api-env
+    command: [--migrate]
+    depends_on:
+      db: {condition: service_healthy}
+    restart: "no"
+  api:
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    environment: *api-env
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      minio: {condition: service_healthy}
+      ai: {condition: service_started}
+    restart: unless-stopped
+  web:
+    build: {context: ., dockerfile: deploy/Web.Dockerfile}
+    ports: ["127.0.0.1:8080:80"]
+    depends_on:
+      api: {condition: service_started}
+    restart: unless-stopped
+volumes:
+  pgdata:
+  objectdata:

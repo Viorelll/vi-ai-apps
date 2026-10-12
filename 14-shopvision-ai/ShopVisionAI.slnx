@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ShopVisionAI.Ai/ShopVisionAI.Ai.csproj" />
+    <Project Path="src/ShopVisionAI.Api/ShopVisionAI.Api.csproj" />
+    <Project Path="src/ShopVisionAI.Contracts/ShopVisionAI.Contracts.csproj" />
+    <Project Path="src/ShopVisionAI.Database/ShopVisionAI.Database.csproj" />
+    <Project Path="src/ShopVisionAI.Domain/ShopVisionAI.Domain.csproj" />
+    <Project Path="src/ShopVisionAI.Infrastructure/ShopVisionAI.Infrastructure.csproj" />
+    <Project Path="src/ShopVisionAI.Services/ShopVisionAI.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ShopVisionAI.Tests/ShopVisionAI.Tests.csproj" />
+  </Folder>
+</Solution>
