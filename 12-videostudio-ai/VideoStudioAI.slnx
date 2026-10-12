@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/VideoStudioAI.Ai/VideoStudioAI.Ai.csproj" />
+    <Project Path="src/VideoStudioAI.Api/VideoStudioAI.Api.csproj" />
+    <Project Path="src/VideoStudioAI.Contracts/VideoStudioAI.Contracts.csproj" />
+    <Project Path="src/VideoStudioAI.Database/VideoStudioAI.Database.csproj" />
+    <Project Path="src/VideoStudioAI.Domain/VideoStudioAI.Domain.csproj" />
+    <Project Path="src/VideoStudioAI.Infrastructure/VideoStudioAI.Infrastructure.csproj" />
+    <Project Path="src/VideoStudioAI.Services/VideoStudioAI.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/VideoStudioAI.Tests/VideoStudioAI.Tests.csproj" />
+  </Folder>
+</Solution>
