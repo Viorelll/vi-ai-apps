@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup></PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="../ShopVisionAI.Contracts/ShopVisionAI.Contracts.csproj" />
+        <PackageReference Include="AWSSDK.S3" Version="4.0.104.2" />
+    </ItemGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+</Project>
