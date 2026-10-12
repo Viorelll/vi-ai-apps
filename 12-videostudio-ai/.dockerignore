@@ -1,0 +1,10 @@
+**/bin
+**/obj
+**/node_modules
+**/dist
+**/test-results
+**/playwright-report
+**/.prettierignore
+.git
+.env
+.local

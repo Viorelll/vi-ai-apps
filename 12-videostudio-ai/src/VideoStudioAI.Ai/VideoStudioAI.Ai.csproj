@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../VideoStudioAI.Contracts/VideoStudioAI.Contracts.csproj" />
+  </ItemGroup>
+</Project>

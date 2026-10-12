@@ -1,0 +1,6 @@
+# Test-only bindings for real PostgreSQL and S3 integration tests.
+services:
+ db:
+  ports: ["127.0.0.1:55432:5432"]
+ minio:
+  ports: ["127.0.0.1:59000:9000"]

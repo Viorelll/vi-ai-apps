@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../VideoStudioAI.Services/VideoStudioAI.Services.csproj" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.104.2" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>

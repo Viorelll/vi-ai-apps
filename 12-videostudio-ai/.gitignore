@@ -1,0 +1,12 @@
+.env
+.local/
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/test-results/
+**/playwright-report/
+*.tsbuildinfo
+.csharpier_cache
+
+__pycache__/
