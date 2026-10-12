@@ -1,0 +1,35 @@
+name: ContractAI
+on:
+  push:
+    paths: ['contract-ai/**', '.github/workflows/contractai.yml']
+  pull_request:
+    paths: ['contract-ai/**', '.github/workflows/contractai.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: contract-ai
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: contract-ai/global.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22'
+          cache: npm
+          cache-dependency-path: contract-ai/src/contractai-web/package-lock.json
+      - run: dotnet tool restore
+      - run: dotnet csharpier check src tests
+      - run: docker compose --env-file .env.example config --quiet
+      - run: INTEGRATION=1 bash scripts/test.sh
+      - run: npx playwright install --with-deps chromium
+        working-directory: contract-ai/src/contractai-web
+      - run: npm --prefix src/contractai-web run test:e2e
+      - run: npm --prefix src/contractai-web run format:check
+      - if: always()
+        run: docker compose -p contractai-tests --env-file .env.example -f compose.yaml -f compose.test.yaml down

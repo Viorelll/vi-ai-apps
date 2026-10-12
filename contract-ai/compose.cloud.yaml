@@ -1,0 +1,26 @@
+# Optional trust bundle supplied by the cloud workspace. Contains public CA certificates only.
+services:
+  minio:
+    build:
+      secrets: [egress_ca]
+  api:
+    build:
+      dockerfile: deploy/Dotnet.Cloud.Dockerfile
+      args: { PROJECT: Api }
+      secrets: [egress_ca]
+  migrate:
+    build:
+      dockerfile: deploy/Dotnet.Cloud.Dockerfile
+      args: { PROJECT: Api }
+      secrets: [egress_ca]
+  ai:
+    build:
+      dockerfile: deploy/Dotnet.Cloud.Dockerfile
+      args: { PROJECT: Ai }
+      secrets: [egress_ca]
+  web:
+    build:
+      secrets: [egress_ca]
+secrets:
+  egress_ca:
+    file: /etc/ssl/certs/ca-certificates.crt

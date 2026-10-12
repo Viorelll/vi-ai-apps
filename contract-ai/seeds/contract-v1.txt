@@ -1,0 +1,8 @@
+1. Părți
+Prestatorul: Furnizor Demo SRL. Beneficiarul: Client Demo SRL.
+
+2. Plata
+Beneficiarul plătește suma de 1000 EUR în 30 zile de la recepție.
+
+3. Confidențialitate
+Prestatorul nu poate divulga informațiile confidențiale.
