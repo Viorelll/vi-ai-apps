@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/InspectAI.Domain/InspectAI.Domain.csproj" />
+  <Project Path="src/InspectAI.Database/InspectAI.Database.csproj" />
+  <Project Path="src/InspectAI.Infrastructure/InspectAI.Infrastructure.csproj" />
+  <Project Path="src/InspectAI.Services/InspectAI.Services.csproj" />
+  <Project Path="src/InspectAI.Api/InspectAI.Api.csproj" />
+  <Project Path="src/InspectAI.Ai/InspectAI.Ai.csproj" />
+  <Project Path="tests/InspectAI.Tests/InspectAI.Tests.csproj" />
+</Solution>

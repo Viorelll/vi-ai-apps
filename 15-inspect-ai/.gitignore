@@ -1,0 +1,11 @@
+.env
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+*.tsbuildinfo
+artifacts/
+.dev/
+**/test-results/
+**/playwright-report/
+**/__pycache__/

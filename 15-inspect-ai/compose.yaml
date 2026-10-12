@@ -1,0 +1,161 @@
+name: inspectai
+services:
+  db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-inspectai}
+      POSTGRES_USER: ${POSTGRES_USER:-inspectai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-replace-with-a-local-password}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  minio:
+    image: chrislusf/seaweedfs:4.06@sha256:a064c6923daf4451c943cec2f437a67523d7792ee589089bc4d4c27a61d78dea
+    command:
+      [
+        "mini",
+        "-dir=/data",
+        "-ip=minio",
+        "-ip.bind=0.0.0.0",
+        "-s3.port=9000",
+        "-s3.config=/etc/seaweedfs/s3.json",
+        "-admin.ui=false",
+        "-webdav=false",
+        "-master.telemetry=false",
+      ]
+    volumes:
+      - minio-data:/data
+      - ./.dev/s3.json:/etc/seaweedfs/s3.json:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "-O",
+          "/dev/null",
+          "http://127.0.0.1:9333/cluster/status",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  ai:
+    build:
+      context: .
+      dockerfile: deploy/Ai.Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "1"
+      Internal__Key: ${INTERNAL_API_KEY:-replace-with-internal-key}
+      NO_PROXY: localhost,127.0.0.1,db,minio,api,ai
+      no_proxy: localhost,127.0.0.1,db,minio,api,ai
+      HTTP_PROXY: ${HTTP_PROXY:-}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+      http_proxy: ${HTTP_PROXY:-}
+      https_proxy: ${HTTPS_PROXY:-}
+      Foundry__OpenAiEndpoint: ${FOUNDRY_OPENAI_ENDPOINT:-https://your-resource.openai.azure.com/openai/v1/}
+      Foundry__ApiKey: ${FOUNDRY_API_KEY:-replace-with-your-foundry-key}
+      Foundry__ChatDeployment: ${CHAT_DEPLOYMENT:-inspectai-chat}
+      Rag__Provider: ${RAG_PROVIDER:-NoRag}
+      ContentUnderstanding__Endpoint: ${CU_ENDPOINT:-https://your-resource.cognitiveservices.azure.com/}
+      ContentUnderstanding__ApiKey: ${CU_API_KEY:-replace-with-cu-key}
+      ContentUnderstanding__Analyzer: ${CU_ANALYZER:-prebuilt-documentSearch}
+      Storage__Endpoint: http://minio:9000
+      Storage__Bucket: ${S3_BUCKET:-inspectai}
+      Storage__AccessKey: ${S3_ROOT_USER:-inspectai-local}
+      Storage__SecretKey: ${S3_ROOT_PASSWORD:-replace-with-another-local-password}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8080/health/live').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  migrate:
+    build:
+      context: .
+      dockerfile: deploy/Api.Dockerfile
+    entrypoint: ["/app/InspectAI.Api"]
+    command: ["--migrate"]
+    environment:
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "1"
+      Internal__Key: ${INTERNAL_API_KEY:-replace-with-internal-key}
+      NO_PROXY: localhost,127.0.0.1,db,minio,api,ai
+      no_proxy: localhost,127.0.0.1,db,minio,api,ai
+      ConnectionStrings__App: Host=db;Port=5432;Database=${POSTGRES_DB:-inspectai};Username=${POSTGRES_USER:-inspectai};Password=${POSTGRES_PASSWORD:-replace-with-a-local-password}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: deploy/Api.Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "1"
+      Internal__Key: ${INTERNAL_API_KEY:-replace-with-internal-key}
+      NO_PROXY: localhost,127.0.0.1,db,minio,api,ai
+      no_proxy: localhost,127.0.0.1,db,minio,api,ai
+      ConnectionStrings__App: Host=db;Port=5432;Database=${POSTGRES_DB:-inspectai};Username=${POSTGRES_USER:-inspectai};Password=${POSTGRES_PASSWORD:-replace-with-a-local-password}
+      Storage__Endpoint: http://minio:9000
+      Storage__Bucket: ${S3_BUCKET:-inspectai}
+      Storage__AccessKey: ${S3_ROOT_USER:-inspectai-local}
+      Storage__SecretKey: ${S3_ROOT_PASSWORD:-replace-with-another-local-password}
+      Ai__BaseUrl: http://ai:8080/
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
+      ai:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8080/health/live').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: deploy/Web.Dockerfile
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  minio-data:

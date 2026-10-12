@@ -1,0 +1,14 @@
+# Public CA bundle only; keeps TLS verification enabled through the cloud proxy.
+services:
+  api:
+    build:
+      secrets: [egress_ca]
+  ai:
+    build:
+      secrets: [egress_ca]
+  migrate:
+    build:
+      secrets: [egress_ca]
+secrets:
+  egress_ca:
+    file: /etc/ssl/certs/ca-certificates.crt

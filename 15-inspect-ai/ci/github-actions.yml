@@ -1,0 +1,25 @@
+# Template: move into the repository's .github/workflows to enable it.
+name: InspectAI
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 15-inspect-ai
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.401'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+      - run: dotnet restore InspectAI.slnx --locked-mode
+      - run: dotnet tool restore
+      - run: dotnet csharpier check .
+      - run: dotnet test InspectAI.slnx -c Release
+      - run: npm --prefix src/inspectai-web ci
+      - run: npm --prefix src/inspectai-web run build
+      - run: npm --prefix src/inspectai-web test
+      - run: npm --prefix src/inspectai-web run format:check

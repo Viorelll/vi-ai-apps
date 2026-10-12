@@ -1,0 +1,26 @@
+import type { Source } from "./Source";
+import type { Finding } from "./Finding";
+import type { Checklist } from "./Checklist";
+import type { Report } from "./Report";
+export type Inspection = {
+  id: string;
+  equipmentLabel: string;
+  equipmentModel: string;
+  manualVersion: string;
+  state: string;
+  revision: number;
+  errorCode: string | null;
+  sources: Source[];
+  findings: Finding[];
+  checklist: Checklist[];
+  report: Report | null;
+  questions: { question: string; answerJson: string }[];
+  limitations: string;
+};
+export type { Source } from "./Source";
+export type { Region } from "./Region";
+export type { Finding } from "./Finding";
+export type { Evidence } from "./Evidence";
+export type { Checklist } from "./Checklist";
+export type { ManualSource } from "./ManualSource";
+export type { Report } from "./Report";

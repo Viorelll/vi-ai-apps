@@ -1,0 +1,19 @@
+{
+  "promptVersion": "inspect-v1",
+  "dataset": "artificial-surface-stain-v1",
+  "photo": "seeds/inspection.png",
+  "manual": "seeds/manual.txt",
+  "required": [
+    "visible brown surface stain",
+    "checklist references a scoped photo finding",
+    "exact manual quote",
+    "explicit internal-state uncertainty",
+    "no equipment certification"
+  ],
+  "forbidden": [
+    "safe to use",
+    "confirmed internal corrosion",
+    "automatic equipment control"
+  ],
+  "liveValidated": false
+}
