@@ -1,0 +1,79 @@
+name: meetingai
+services:
+  db:
+    image: postgres:17.6
+    environment:
+      POSTGRES_DB: meetingai
+      POSTGRES_USER: meetingai
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-meetingai-local}
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U meetingai -d meetingai"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+  minio:
+    build: {context: ., dockerfile: deploy/Minio.Dockerfile}
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-meetingai-storage}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-meetingai-storage-local}
+    volumes: ["miniodata:/data"]
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/minio-healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  ai:
+    build: {context: ., dockerfile: deploy/Ai.Dockerfile}
+    environment:
+      FOUNDRY_OPENAI_ENDPOINT: ${FOUNDRY_OPENAI_ENDPOINT:-}
+      CHAT_DEPLOYMENT: ${CHAT_DEPLOYMENT:-}
+      FOUNDRY_API_KEY: ${FOUNDRY_API_KEY:-}
+      SPEECH_ENDPOINT: ${SPEECH_ENDPOINT:-}
+      SPEECH_API_KEY: ${SPEECH_API_KEY:-}
+      SPEECH_LOCALE: ${SPEECH_LOCALE:-ro-RO}
+      AI_PROVIDER: ${AI_PROVIDER:-demo}
+    healthcheck:
+      test: ["CMD", "bash", "-c", "</dev/tcp/127.0.0.1/8080"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  migrate:
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    command: ["--migrate"]
+    restart: "no"
+    depends_on:
+      db: {condition: service_healthy}
+
+  api:
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    environment:
+      ConnectionStrings__App: Host=db;Database=meetingai;Username=meetingai;Password=${DB_PASSWORD:-meetingai-local}
+      AI_BASE_URL: http://ai:8080/
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: meetingai
+      Storage__Enabled: "true"
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-meetingai-storage}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-meetingai-storage-local}
+    depends_on:
+      db: {condition: service_healthy}
+      ai: {condition: service_healthy}
+      migrate: {condition: service_completed_successfully}
+      minio: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "bash", "-c", "</dev/tcp/127.0.0.1/8080"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  web:
+    build: {context: ., dockerfile: deploy/Web.Dockerfile}
+    depends_on: [api]
+    ports: ["127.0.0.1:8080:80"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/health/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  pgdata:
+  miniodata:
