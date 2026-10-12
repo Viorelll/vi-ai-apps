@@ -33,7 +33,7 @@ if [ ! -x /workspace/.setup/minio ]; then
       /workspace/.go/bin/go build -p 2 -o /workspace/.setup/minio .
   )
 fi
-cd /workspace/vi-ai-apps/support-ai
+cd /workspace/vi-ai-apps/02-support-ai
 dotnet restore SupportAI.slnx --locked-mode
 dotnet build SupportAI.slnx -c Release --no-restore -m:2
 npm --prefix src/supportai-web ci --cache /workspace/.cache/npm

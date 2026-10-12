@@ -7,7 +7,7 @@ Asistent de suport pentru clienți, implementat după ghidul `02_SupportAI_Ghid_
 Necesită Docker Compose. Pentru dezvoltare nativă: SDK .NET 10.0.401, Node 22.12+ și Python 3 pentru scripturile de verificare.
 
 ```sh
-cd support-ai
+cd 02-support-ai
 python3 scripts/create-env.py --demo
 docker compose --env-file .env up -d --build
 python3 scripts/readiness.py

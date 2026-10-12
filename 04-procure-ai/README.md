@@ -7,7 +7,7 @@ Aplicație de achiziții după [ghidul furnizat](docs/04_ProcureAI_Ghid_Dezvolta
 Necesită Docker Compose 2.24+; pentru build nativ: .NET 10, Node 22.12+ și Python 3.
 
 ```bash
-cd procure-ai
+cd 04-procure-ai
 cp .env.example .env
 docker compose config --quiet
 docker compose up -d --build

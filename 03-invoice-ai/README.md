@@ -1,11 +1,11 @@
 # InvoiceAI
 
-Aplicație .NET 10 + React/TypeScript pentru facturi și bonuri, implementată după ghidul furnizat. Toate fișierele aplicației sunt în acest director; proiectul existent `docu-ai` rămâne separat.
+Aplicație .NET 10 + React/TypeScript pentru facturi și bonuri, implementată după ghidul furnizat. Toate fișierele aplicației sunt în acest director; proiectul existent `01-docu-ai` rămâne separat.
 
 ## Pornire
 
 ```bash
-cd 03-InvoiceAI
+cd 03-invoice-ai
 cp .env.example .env   # numai dacă .env nu există
 # Mod demo, fără resurse Azure:
 docker compose up -d --build
