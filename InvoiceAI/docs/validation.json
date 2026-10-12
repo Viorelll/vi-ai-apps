@@ -1,0 +1,63 @@
+{
+  "validatedDate": "2026-10-12",
+  "workflow": "InvoiceAI core / explicit deterministic Demo",
+  "dotnet": {
+    "configuration": "Release",
+    "passed": 59,
+    "failed": 0,
+    "skipped": 0,
+    "unitTests": 52,
+    "postgresAndS3IntegrationTests": 7
+  },
+  "frontend": {
+    "build": "passed",
+    "testsPassed": 19,
+    "testsFailed": 0
+  },
+  "browser": {
+    "engine": "Chromium",
+    "testsPassed": 1,
+    "desktop": "passed",
+    "mobileOverflow": "passed"
+  },
+  "httpAcceptance": {
+    "checksPassed": 16,
+    "invoiceMismatch": {
+      "subtotal": 100,
+      "tax": 20,
+      "extractedTotal": 119,
+      "correctedTotal": 120,
+      "currency": "MDL",
+      "exportBeforeCorrection": "blocked",
+      "exportAfterCorrection": "passed"
+    }
+  },
+  "restartAcceptance": {
+    "checksPassed": 5,
+    "analysisResumes": true,
+    "invoiceAndRevisionPersist": true,
+    "exportSnapshotPersists": true,
+    "conversationAndCitationsPersist": true,
+    "originalS3ObjectPersists": true
+  },
+  "compose": {
+    "permanentServices": [
+      "web",
+      "api",
+      "ai",
+      "db",
+      "minio"
+    ],
+    "migrationExitCode": 0,
+    "currentRuntime": "healthy",
+    "validatedImages": "cloud images built from published host outputs and official .NET SDK / pinned MinIO source",
+    "standardMcrDockerBuild": "blocked in current instance by MCR CDN egress; domains added to configuration draft"
+  },
+  "azureLive": {
+    "status": "not_run",
+    "reason": "User requested dummy credential and endpoint placeholders",
+    "command": "python scripts/live-smoke.py --accept-cloud-costs"
+  },
+  "configurationPublication": "not_performed",
+  "freshTaskSnapshotRestoration": "not_validated"
+}

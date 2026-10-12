@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../InvoiceAI.Services/InvoiceAI.Services.csproj" /><ProjectReference Include="../InvoiceAI.Contracts/InvoiceAI.Contracts.csproj" /><PackageReference Include="AWSSDK.S3" Version="4.0.104.2" /><FrameworkReference Include="Microsoft.AspNetCore.App" /></ItemGroup></Project>

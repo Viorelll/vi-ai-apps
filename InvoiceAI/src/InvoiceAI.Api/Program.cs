@@ -1,0 +1,34 @@
+using InvoiceAI.Api.Workers;
+using InvoiceAI.Api.Middleware;
+using InvoiceAI.Database.Persistence;
+using InvoiceAI.Database.Repositories;
+using InvoiceAI.Infrastructure;
+using InvoiceAI.Services.Abstractions;
+using InvoiceAI.Services.Services;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Trace;
+if (args.Contains("--health-check")) { Environment.ExitCode = await InvoiceAI.Infrastructure.Health.HttpHealthProbe.CheckAsync(false); return; }
+var migrateOnly = args.Contains("--migrate");
+var builder = WebApplication.CreateBuilder(args.Where(x => x != "--migrate").ToArray());
+builder.WebHost.ConfigureKestrel(o => o.Limits.MaxRequestBodySize = 55L * 1024 * 1024);
+builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = 50L * 1024 * 1024);
+builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddDbContextFactory<AppDbContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("App") ?? throw new InvalidOperationException("ConnectionStrings:App missing")));
+builder.Services.AddObjectStorage(builder.Configuration).AddAiGateway(builder.Configuration);
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IJobRepository, JobRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<InvoiceService>();
+builder.Services.AddScoped<DocumentService>();
+builder.Services.AddScoped<ChatService>();
+if (!migrateOnly) builder.Services.AddHostedService<DurableInvoiceWorker>();
+builder.Services.AddOpenTelemetry().WithTracing(t => t.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation());
+var app = builder.Build();
+if (migrateOnly) { await using var db = await app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>().CreateDbContextAsync(); await db.Database.MigrateAsync(); return; }
+app.UseMiddleware<ProblemMiddleware>();
+app.MapControllers();
+await app.RunAsync();
+public partial class Program;
