@@ -1,0 +1,18 @@
+{
+  "pipelineVersion": "temporal-v1",
+  "promptVersion": "grounded-v1",
+  "cases": [
+    {
+      "question": "index pentru query",
+      "expectedStartMs": 70000,
+      "expectedEndMs": 95000,
+      "requiredExcerpt": "CREATE INDEX"
+    },
+    {
+      "question": "astronomie telescop galaxie",
+      "expectedCitations": 0
+    }
+  ],
+  "provider": "artificial-demo-fixture",
+  "liveFoundryValidated": false
+}

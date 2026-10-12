@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/VideoSearchAI.Ai/VideoSearchAI.Ai.csproj" />
+    <Project Path="src/VideoSearchAI.Api/VideoSearchAI.Api.csproj" />
+    <Project Path="src/VideoSearchAI.Contracts/VideoSearchAI.Contracts.csproj" />
+    <Project Path="src/VideoSearchAI.Database/VideoSearchAI.Database.csproj" />
+    <Project Path="src/VideoSearchAI.Domain/VideoSearchAI.Domain.csproj" />
+    <Project Path="src/VideoSearchAI.Infrastructure/VideoSearchAI.Infrastructure.csproj" />
+    <Project Path="src/VideoSearchAI.Services/VideoSearchAI.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/VideoSearchAI.Tests/VideoSearchAI.Tests.csproj" />
+  </Folder>
+</Solution>

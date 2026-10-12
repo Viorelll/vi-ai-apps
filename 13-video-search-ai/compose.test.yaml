@@ -1,0 +1,12 @@
+services:
+  db:
+    ports: ["127.0.0.1:55413:5432"]
+    volumes: [testpgdata:/var/lib/postgresql/data]
+  minio:
+    ports: ["127.0.0.1:59013:9000"]
+  api:
+    ports: ["127.0.0.1:55013:8080"]
+  ai:
+    ports: ["127.0.0.1:55113:8080"]
+volumes:
+  testpgdata:

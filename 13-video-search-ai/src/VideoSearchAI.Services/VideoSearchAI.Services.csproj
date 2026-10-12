@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../VideoSearchAI.Domain/VideoSearchAI.Domain.csproj" />
+    <ProjectReference Include="../VideoSearchAI.Contracts/VideoSearchAI.Contracts.csproj" />
+    <ProjectReference Include="../VideoSearchAI.Database/VideoSearchAI.Database.csproj" />
+    <ProjectReference Include="../VideoSearchAI.Infrastructure/VideoSearchAI.Infrastructure.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>
