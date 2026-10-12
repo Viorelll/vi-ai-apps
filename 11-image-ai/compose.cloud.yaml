@@ -1,0 +1,25 @@
+# Additional public trust roots for this cloud runner; no TLS verification is disabled.
+services:
+  api:
+    build:
+      network: host
+      extra_hosts: ["proxy:${IMAGEAI_PROXY_IP:?resolve proxy IP with scripts/build-cloud.sh}"]
+      secrets: [proxy_ca]
+  ai:
+    build:
+      network: host
+      extra_hosts: ["proxy:${IMAGEAI_PROXY_IP:?resolve proxy IP with scripts/build-cloud.sh}"]
+      secrets: [proxy_ca]
+  migrate:
+    build:
+      network: host
+      extra_hosts: ["proxy:${IMAGEAI_PROXY_IP:?resolve proxy IP with scripts/build-cloud.sh}"]
+      secrets: [proxy_ca]
+  web:
+    build:
+      network: host
+      extra_hosts: ["proxy:${IMAGEAI_PROXY_IP:?resolve proxy IP with scripts/build-cloud.sh}"]
+      secrets: [proxy_ca]
+secrets:
+  proxy_ca:
+    file: ${IMAGEAI_CA_FILE:-/etc/ssl/certs/ca-certificates.crt}

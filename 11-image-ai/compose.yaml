@@ -1,0 +1,100 @@
+name: imageai
+x-api-environment: &api-environment
+  ConnectionStrings__App: Host=db;Database=imageai;Username=imageai;Password=${DB_PASSWORD:-replace-with-database-password}
+  Storage__Endpoint: http://minio:9000
+  Storage__AccessKey: ${MINIO_ROOT_USER:-imageai-storage}
+  Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-replace-with-storage-password}
+  Storage__Bucket: imageai
+  Gateway__BaseUrl: http://ai:8080/
+  Gateway__InternalApiKey: ${INTERNAL_API_KEY:-replace-with-internal-secret}
+  ProviderMode: ${IMAGE_PROVIDER:-Demo}
+x-api-build: &api-build
+  context: .
+  dockerfile: deploy/Dotnet.Dockerfile
+  args:
+    PROJECT: Api
+services:
+  db:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_DB: imageai
+      POSTGRES_USER: imageai
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-replace-with-database-password}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U imageai -d imageai']
+      interval: 3s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  minio:
+    image: bitnamilegacy/minio:2025.4.22-debian-12-r0@sha256:a26e42a4d6550d2fb7708c8ceefc60474b42c124b6f3273a081721ddf1d86b20
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-imageai-storage}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-replace-with-storage-password}
+    volumes: [objectdata:/bitnami/minio/data]
+    healthcheck:
+      test: [CMD-SHELL, 'curl -fsS http://localhost:9000/minio/health/live >/dev/null']
+      interval: 3s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  ai:
+    image: imageai-ai:local
+    build:
+      context: .
+      dockerfile: deploy/Dotnet.Dockerfile
+      args: {PROJECT: Ai}
+    environment:
+      Images__Mode: ${IMAGE_PROVIDER:-Demo}
+      Images__Endpoint: ${IMAGE_ENDPOINT:-https://RESOURCE.openai.azure.com/}
+      Images__ApiKey: ${IMAGE_API_KEY:-replace-with-foundry-key}
+      Images__Deployment: ${IMAGE_DEPLOYMENT:-replace-image-deployment}
+      Images__ApiVersion: ${IMAGE_API_VERSION:-2025-04-01-preview}
+      Images__ChatDeployment: ${CHAT_DEPLOYMENT:-}
+      Images__InternalApiKey: ${INTERNAL_API_KEY:-replace-with-internal-secret}
+    healthcheck:
+      test: [CMD-SHELL, 'curl -fsS http://localhost:8080/health/ready >/dev/null']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  migrate:
+    image: imageai-api:local
+    build: *api-build
+    environment: *api-environment
+    command: [--migrate]
+    depends_on:
+      db: {condition: service_healthy}
+    restart: 'no'
+  api:
+    image: imageai-api:local
+    build: *api-build
+    environment: *api-environment
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      minio: {condition: service_healthy}
+      ai: {condition: service_healthy}
+    healthcheck:
+      test: [CMD-SHELL, 'curl -fsS http://localhost:8080/health/ready >/dev/null']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  web:
+    image: imageai-web:local
+    build:
+      context: .
+      dockerfile: deploy/Web.Dockerfile
+    ports: ['127.0.0.1:8080:80']
+    depends_on:
+      api: {condition: service_healthy}
+    healthcheck:
+      test: [CMD-SHELL, 'wget -q -O /dev/null http://localhost/health/ready']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+volumes:
+  pgdata:
+  objectdata:

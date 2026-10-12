@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../ImageAI.Domain/ImageAI.Domain.csproj" />
+    <ProjectReference Include="../ImageAI.Contracts/ImageAI.Contracts.csproj" />
+    <ProjectReference Include="../ImageAI.Database/ImageAI.Database.csproj" />
+    <ProjectReference Include="../ImageAI.Infrastructure/ImageAI.Infrastructure.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>
