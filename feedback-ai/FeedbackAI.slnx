@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/FeedbackAI.Domain/FeedbackAI.Domain.csproj" />
+  <Project Path="src/FeedbackAI.Application/FeedbackAI.Application.csproj" />
+  <Project Path="src/FeedbackAI.Database/FeedbackAI.Database.csproj" />
+  <Project Path="src/FeedbackAI.Infrastructure/FeedbackAI.Infrastructure.csproj" />
+  <Project Path="src/FeedbackAI.Api/FeedbackAI.Api.csproj" />
+  <Project Path="src/FeedbackAI.Ai/FeedbackAI.Ai.csproj" />
+  <Project Path="tests/FeedbackAI.UnitTests/FeedbackAI.UnitTests.csproj" />
+</Solution>

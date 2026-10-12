@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup><ItemGroup><ProjectReference Include="../FeedbackAI.Application/FeedbackAI.Application.csproj"/><PackageReference Include="AWSSDK.S3" Version="4.0.104.2"/></ItemGroup></Project>

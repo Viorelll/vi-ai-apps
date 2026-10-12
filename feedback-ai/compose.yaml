@@ -1,0 +1,74 @@
+name: feedbackai
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: feedbackai
+      POSTGRES_USER: feedbackai
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U feedbackai -d feedbackai"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    restart: unless-stopped
+  minio:
+    build:
+      context: .
+      dockerfile: deploy/Minio.Dockerfile
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
+    volumes: ["objectdata:/data"]
+    healthcheck:
+      test: ["CMD", "healthprobe"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  migrate:
+    build:
+      context: .
+      dockerfile: deploy/Api.Dockerfile
+    command: ["--migrate"]
+    environment: &api-env
+      ConnectionStrings__App: Host=db;Database=feedbackai;Username=feedbackai;Password=${DB_PASSWORD:?Set DB_PASSWORD}
+      Ai__BaseUrl: http://ai:8080/
+      Storage__Endpoint: http://minio:9000
+      Storage__AccessKey: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
+      Storage__SecretKey: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
+      Storage__Bucket: feedbackai
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+  ai:
+    build:
+      context: .
+      dockerfile: deploy/Ai.Dockerfile
+    environment:
+      AI_MODE: ${AI_MODE:-Demo}
+      FOUNDRY_OPENAI_ENDPOINT: ${FOUNDRY_OPENAI_ENDPOINT:-}
+      FOUNDRY_API_KEY: ${FOUNDRY_API_KEY:-}
+      CHAT_DEPLOYMENT: ${CHAT_DEPLOYMENT:-feedbackai-chat}
+    restart: unless-stopped
+  api:
+    build:
+      context: .
+      dockerfile: deploy/Api.Dockerfile
+    environment: *api-env
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      minio: { condition: service_healthy }
+      ai: { condition: service_started }
+    restart: unless-stopped
+  web:
+    build:
+      context: .
+      dockerfile: deploy/Web.Dockerfile
+    ports: ["127.0.0.1:${WEB_PORT:-8080}:80"]
+    depends_on: [api]
+    restart: unless-stopped
+volumes:
+  pgdata:
+  objectdata:
