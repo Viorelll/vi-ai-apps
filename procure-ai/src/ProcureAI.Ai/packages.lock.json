@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "4.0.102.9",
+        "contentHash": "VWGkR0QXDTmThusATC6I9IX06YtYeQNF+1/v6vBbfzIC+MaAuNjYn0aSTIyX+abciZvFhuSSi0d6/pC93wROCw=="
+      },
+      "AWSSDK.S3": {
+        "type": "Transitive",
+        "resolved": "4.0.104.2",
+        "contentHash": "ImZ1pO9SWh+RAN8hmN5OnonyTvq+/q4dXLxTxjtsZ60c06dnCCy+MX3sc4F3Q8c9J1bg8WoU+VkrrVIpXLviww==",
+        "dependencies": {
+          "AWSSDK.Core": "[4.0.102.9, 5.0.0)"
+        }
+      },
+      "procureai.application": {
+        "type": "Project",
+        "dependencies": {
+          "ProcureAI.Domain": "[1.0.0, )"
+        }
+      },
+      "procureai.domain": {
+        "type": "Project"
+      },
+      "procureai.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "AWSSDK.S3": "[4.0.104.2, )",
+          "ProcureAI.Application": "[1.0.0, )",
+          "ProcureAI.Domain": "[1.0.0, )"
+        }
+      }
+    }
+  }
+}

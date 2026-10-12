@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ProcureAI.Domain/ProcureAI.Domain.csproj" />
+    <ProjectReference Include="../ProcureAI.Application/ProcureAI.Application.csproj" />
+    <ProjectReference Include="../ProcureAI.Database/ProcureAI.Database.csproj" />
+    <ProjectReference Include="../ProcureAI.Infrastructure/ProcureAI.Infrastructure.csproj" />
+    <ProjectReference Include="../ProcureAI.Ai/ProcureAI.Ai.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

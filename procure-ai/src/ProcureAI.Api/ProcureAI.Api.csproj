@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ProcureAI.Domain/ProcureAI.Domain.csproj" />
+    <ProjectReference Include="../ProcureAI.Application/ProcureAI.Application.csproj" />
+    <ProjectReference Include="../ProcureAI.Database/ProcureAI.Database.csproj" />
+    <ProjectReference Include="../ProcureAI.Infrastructure/ProcureAI.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

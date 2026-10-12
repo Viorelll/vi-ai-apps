@@ -1,0 +1,10 @@
+{
+  "supplierLabel": "Oferta B",
+  "currency": "EUR",
+  "quantity": 10,
+  "unit": "unități",
+  "net": 980,
+  "shipping": 120,
+  "leadDays": 9,
+  "meetsRequirements": true
+}

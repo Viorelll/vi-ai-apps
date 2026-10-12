@@ -1,0 +1,14 @@
+# S3-compatible alternative for environments unable to fetch the archived MinIO build.
+# This replaces the storage container; it adds no permanent services.
+services:
+  minio:
+    build: !reset null
+    image: chrislusf/seaweedfs:4.06@sha256:a064c6923daf4451c943cec2f437a67523d7792ee589089bc4d4c27a61d78dea
+    command: [mini, -dir=/data, -ip=minio, -ip.bind=0.0.0.0, -s3.port=9000, -s3.config=/etc/seaweedfs/s3.json, -admin.ui=false, -webdav=false, -master.telemetry=false]
+    volumes:
+      - ./.dev/s3.json:/etc/seaweedfs/s3.json:ro
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, "http://localhost:9333/cluster/status"]
+      interval: 3s
+      timeout: 3s
+      retries: 30

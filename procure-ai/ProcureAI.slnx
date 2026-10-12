@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/ProcureAI.Domain/ProcureAI.Domain.csproj" />
+  <Project Path="src/ProcureAI.Application/ProcureAI.Application.csproj" />
+  <Project Path="src/ProcureAI.Database/ProcureAI.Database.csproj" />
+  <Project Path="src/ProcureAI.Infrastructure/ProcureAI.Infrastructure.csproj" />
+  <Project Path="src/ProcureAI.Api/ProcureAI.Api.csproj" />
+  <Project Path="src/ProcureAI.Ai/ProcureAI.Ai.csproj" />
+  <Project Path="src/ProcureAI.Tests/ProcureAI.Tests.csproj" />
+</Solution>
