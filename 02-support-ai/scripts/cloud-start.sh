@@ -6,7 +6,7 @@ export DOTNET_CLI_HOME=/workspace/.dotnet-home
 export NUGET_PACKAGES=/workspace/.cache/nuget
 export DOCKER_CONFIG=/workspace/.docker
 export PATH="$DOTNET_ROOT:$PATH"
-cd /workspace/vi-ai-apps/support-ai
+cd /workspace/vi-ai-apps/02-support-ai
 python3 scripts/create-env.py --demo
 docker compose --env-file .env -f compose.yaml -f compose.dev.yaml up -d --no-build
 supportai_web_port="$(python3 - <<'PY'

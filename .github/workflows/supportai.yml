@@ -1,16 +1,16 @@
 name: SupportAI
 on:
   push:
-    paths: ["support-ai/**", ".github/workflows/supportai.yml"]
+    paths: ["02-support-ai/**", ".github/workflows/supportai.yml"]
   pull_request:
-    paths: ["support-ai/**", ".github/workflows/supportai.yml"]
+    paths: ["02-support-ai/**", ".github/workflows/supportai.yml"]
 jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     defaults:
       run:
-        working-directory: support-ai
+        working-directory: 02-support-ai
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -20,12 +20,12 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: support-ai/src/supportai-web/package-lock.json
+          cache-dependency-path: 02-support-ai/src/supportai-web/package-lock.json
       - run: dotnet restore SupportAI.slnx --locked-mode
       - run: dotnet build SupportAI.slnx -c Release --no-restore
       - run: dotnet test tests/SupportAI.UnitTests -c Release --no-build
       - run: npm ci && npm run build && npm test
-        working-directory: support-ai/src/supportai-web
+        working-directory: 02-support-ai/src/supportai-web
       - run: python3 scripts/create-env.py --demo
       - run: docker compose --env-file .env -f compose.yaml -f compose.dev.yaml config --quiet
       - run: docker compose --env-file .env -f compose.yaml -f compose.dev.yaml up -d --build
@@ -33,7 +33,7 @@ jobs:
       - run: python3 scripts/integration.py
       - run: python3 scripts/smoke.py
       - run: npx playwright install --with-deps chromium && npm run test:e2e
-        working-directory: support-ai/src/supportai-web
+        working-directory: 02-support-ai/src/supportai-web
       - if: always()
         run: docker compose --env-file .env -f compose.yaml -f compose.dev.yaml down
       - uses: actions/upload-artifact@v4
@@ -41,5 +41,5 @@ jobs:
         with:
           name: supportai-results
           path: |
-            support-ai/output/
-            support-ai/tests/**/TestResults/
+            02-support-ai/output/
+            02-support-ai/tests/**/TestResults/

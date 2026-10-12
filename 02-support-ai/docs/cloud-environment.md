@@ -10,7 +10,7 @@ export PATH="$DOTNET_ROOT:$PATH"
 export DOTNET_CLI_HOME=/workspace/.dotnet-home
 export NUGET_PACKAGES=/workspace/.cache/nuget
 export DOCKER_CONFIG=/workspace/.docker
-cd /workspace/vi-ai-apps/support-ai
+cd /workspace/vi-ai-apps/02-support-ai
 dotnet restore SupportAI.slnx --locked-mode
 npm --prefix src/supportai-web ci --cache /workspace/.cache/npm
 ```
@@ -33,7 +33,7 @@ The `|direct` fallback uses normal Git authentication and still verifies modules
 Restart retained services after a new task starts:
 
 ```sh
-cd /workspace/vi-ai-apps/support-ai
+cd /workspace/vi-ai-apps/02-support-ai
 python3 scripts/create-env.py --demo  # preserves any existing .env
 DOCKER_CONFIG=/workspace/.docker docker compose --env-file .env -f compose.yaml -f compose.dev.yaml up -d --no-build
 python3 scripts/readiness.py --base-url http://127.0.0.1:8082
