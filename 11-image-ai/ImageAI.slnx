@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ImageAI.Ai/ImageAI.Ai.csproj" />
+    <Project Path="src/ImageAI.Api/ImageAI.Api.csproj" />
+    <Project Path="src/ImageAI.Contracts/ImageAI.Contracts.csproj" />
+    <Project Path="src/ImageAI.Database/ImageAI.Database.csproj" />
+    <Project Path="src/ImageAI.Domain/ImageAI.Domain.csproj" />
+    <Project Path="src/ImageAI.Infrastructure/ImageAI.Infrastructure.csproj" />
+    <Project Path="src/ImageAI.Services/ImageAI.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ImageAI.Tests/ImageAI.Tests.csproj" />
+  </Folder>
+</Solution>

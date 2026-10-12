@@ -1,0 +1,4 @@
+# Optional integration-test access; normal Compose only publishes web.
+services:
+  db:
+    ports: ['127.0.0.1:5433:5432']

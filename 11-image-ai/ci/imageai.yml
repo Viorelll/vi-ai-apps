@@ -1,0 +1,46 @@
+name: ImageAI
+on:
+  push:
+    paths: ['11-image-ai/**', '.github/workflows/imageai.yml']
+  pull_request:
+    paths: ['11-image-ai/**', '.github/workflows/imageai.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 11-image-ai
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: imageai
+          POSTGRES_USER: imageai
+          POSTGRES_PASSWORD: test-only-placeholder
+        ports: ['5433:5432']
+        options: --health-cmd "pg_isready -U imageai" --health-interval 3s --health-timeout 5s --health-retries 20
+    env:
+      IMAGEAI_TEST_DB: Host=127.0.0.1;Port=5433;Database=imageai;Username=imageai;Password=test-only-placeholder
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.401
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: 11-image-ai/src/imageai-web/package-lock.json
+      - run: dotnet tool restore && dotnet restore ImageAI.slnx --locked-mode
+      - run: dotnet test ImageAI.slnx -c Release --no-restore
+      - run: dotnet format ImageAI.slnx --no-restore --verify-no-changes
+      - run: npm ci && npm run build && npm test && npm run format:check && npm audit --audit-level=moderate
+        working-directory: 11-image-ai/src/imageai-web
+      - run: docker compose up -d --build --wait
+      - run: python3 scripts/smoke.py --base http://127.0.0.1:8080
+      - run: npx playwright install --with-deps chromium && IMAGEAI_WEB_URL=http://127.0.0.1:8080 npx playwright test
+        working-directory: 11-image-ai/src/imageai-web
+      - if: always()
+        run: docker compose down
