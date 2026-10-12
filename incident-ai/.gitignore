@@ -1,0 +1,11 @@
+.env
+.dev/
+**/bin/
+**/obj/
+**/bin*
+**/obj*
+**/node_modules/
+**/dist/
+artifacts/
+.vscode/
+.idea/

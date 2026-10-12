@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/IncidentAI.Ai/IncidentAI.Ai.csproj" />
+    <Project Path="src/IncidentAI.Api/IncidentAI.Api.csproj" />
+    <Project Path="src/IncidentAI.Application/IncidentAI.Application.csproj" />
+    <Project Path="src/IncidentAI.Domain/IncidentAI.Domain.csproj" />
+    <Project Path="src/IncidentAI.Infrastructure/IncidentAI.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/IncidentAI.Tests/IncidentAI.Tests.csproj" />
+  </Folder>
+</Solution>
