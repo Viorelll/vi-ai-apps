@@ -1,0 +1,9 @@
+.env
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+*.tsbuildinfo
+.npm/
+.dotnet/
+artifacts/
