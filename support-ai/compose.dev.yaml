@@ -1,0 +1,6 @@
+# Optional loopback ports for native dotnet/Vite development and integration tests.
+services:
+  db:
+    ports: ["127.0.0.1:55432:5432"]
+  minio:
+    ports: ["127.0.0.1:59000:9000"]

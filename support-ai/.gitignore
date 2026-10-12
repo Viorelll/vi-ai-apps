@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+TestResults/
+playwright-report/
+
+output/
+.cache/
+
+__pycache__/

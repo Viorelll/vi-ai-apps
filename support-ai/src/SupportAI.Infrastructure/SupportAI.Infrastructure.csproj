@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup><ItemGroup><ProjectReference Include="../SupportAI.Domain/SupportAI.Domain.csproj" />
+<ProjectReference Include="../SupportAI.Application/SupportAI.Application.csproj" />
+<PackageReference Include="AWSSDK.S3" Version="4.0.104.2" />
+<FrameworkReference Include="Microsoft.AspNetCore.App" /></ItemGroup></Project>
