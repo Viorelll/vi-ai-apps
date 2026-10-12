@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/DataAI.Domain/DataAI.Domain.csproj" />
+  <Project Path="src/DataAI.Application/DataAI.Application.csproj" />
+  <Project Path="src/DataAI.Database/DataAI.Database.csproj" />
+  <Project Path="src/DataAI.Infrastructure/DataAI.Infrastructure.csproj" />
+  <Project Path="src/DataAI.Api/DataAI.Api.csproj" />
+  <Project Path="src/DataAI.Ai/DataAI.Ai.csproj" />
+  <Project Path="tests/DataAI.Tests/DataAI.Tests.csproj" />
+</Solution>

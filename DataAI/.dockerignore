@@ -1,0 +1,10 @@
+.git
+.env
+.dev
+**/bin
+**/obj
+**/node_modules
+**/coverage
+**/.vite
+*.user
+*.suo
