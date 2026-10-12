@@ -1,0 +1,86 @@
+name: invoiceai
+x-storage-env: &storage-env
+ Storage__Endpoint: http://minio:9000
+ Storage__AccessKey: ${MINIO_ROOT_USER:-invoiceai-storage}
+ Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-dummy-storage-password-change-me}
+ Storage__Bucket: invoiceai
+ Internal__Key: ${INTERNAL_API_KEY:-dummy-internal-key-change-me}
+x-api-env: &api-env
+ <<: *storage-env
+ ASPNETCORE_HTTP_PORTS: "8080"
+ ConnectionStrings__App: Host=db;Database=invoiceai;Username=invoiceai;Password=${DB_PASSWORD:-dummy-db-password-change-me}
+ Ai__BaseUrl: http://ai:8080/
+ Ai__Mode: ${AI_MODE:-Demo}
+services:
+ db:
+  image: postgres:17.6
+  environment:
+   POSTGRES_DB: invoiceai
+   POSTGRES_USER: invoiceai
+   POSTGRES_PASSWORD: ${DB_PASSWORD:-dummy-db-password-change-me}
+  volumes: [pgdata:/var/lib/postgresql/data]
+  healthcheck:
+   test: [CMD-SHELL, pg_isready -U invoiceai -d invoiceai]
+   interval: 5s
+   timeout: 3s
+   retries: 20
+  restart: unless-stopped
+ minio:
+  build: {context: ., dockerfile: deploy/Minio.Dockerfile}
+  environment:
+   MINIO_ROOT_USER: ${MINIO_ROOT_USER:-invoiceai-storage}
+   MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-dummy-storage-password-change-me}
+  volumes: [objectdata:/data]
+  healthcheck:
+   test: [CMD, curl, -f, http://localhost:9000/minio/health/live]
+   interval: 5s
+   timeout: 3s
+   retries: 20
+  restart: unless-stopped
+ ai:
+  build: {context: ., dockerfile: deploy/Ai.Dockerfile}
+  environment:
+   <<: *storage-env
+   ASPNETCORE_HTTP_PORTS: "8080"
+   Providers__Mode: ${AI_MODE:-Demo}
+   Providers__DocumentEndpoint: ${DOCINT_ENDPOINT:-https://RESOURCE.cognitiveservices.azure.com/}
+   Providers__DocumentKey: ${DOCINT_KEY:-dummy-document-intelligence-key}
+   Providers__OpenAiEndpoint: ${FOUNDRY_OPENAI_ENDPOINT:-https://RESOURCE.openai.azure.com/openai/v1/}
+   Providers__ApiKey: ${FOUNDRY_API_KEY:-dummy-foundry-key}
+   Providers__ChatDeployment: ${CHAT_DEPLOYMENT:-invoiceai-chat}
+   Safety__PromptShieldsEnabled: ${PROMPT_SHIELDS_ENABLED:-false}
+   Safety__Endpoint: ${SAFETY_ENDPOINT:-https://RESOURCE.cognitiveservices.azure.com/}
+   Safety__ApiKey: ${SAFETY_KEY:-dummy-content-safety-key}
+  depends_on: {minio: {condition: service_healthy}}
+  healthcheck:
+   test: [CMD, dotnet, InvoiceAI.Ai.dll, --health-check]
+   interval: 10s
+   timeout: 5s
+   retries: 15
+  restart: unless-stopped
+ migrate:
+  build: {context: ., dockerfile: deploy/Api.Dockerfile}
+  environment: *api-env
+  command: [--migrate]
+  depends_on: {db: {condition: service_healthy}}
+  restart: "no"
+ api:
+  build: {context: ., dockerfile: deploy/Api.Dockerfile}
+  environment: *api-env
+  depends_on:
+   migrate: {condition: service_completed_successfully}
+   ai: {condition: service_healthy}
+  healthcheck:
+   test: [CMD, dotnet, InvoiceAI.Api.dll, --health-check]
+   interval: 10s
+   timeout: 5s
+   retries: 15
+  restart: unless-stopped
+ web:
+  build: {context: ., dockerfile: deploy/Web.Dockerfile}
+  ports: ["127.0.0.1:${WEB_PORT:-8080}:80"]
+  depends_on: {api: {condition: service_healthy}}
+  restart: unless-stopped
+volumes:
+ pgdata:
+ objectdata:

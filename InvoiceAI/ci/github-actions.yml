@@ -1,0 +1,39 @@
+name: InvoiceAI
+on:
+ push:
+  paths: ["InvoiceAI/**"]
+ pull_request:
+  paths: ["InvoiceAI/**"]
+jobs:
+ validate:
+  runs-on: ubuntu-latest
+  defaults:
+   run: {working-directory: InvoiceAI}
+  services:
+   postgres:
+    image: postgres:17.6
+    env:
+     POSTGRES_DB: invoiceai
+     POSTGRES_USER: invoiceai
+     POSTGRES_PASSWORD: dummy-db-password-change-me
+    ports: [5432:5432]
+    options: --health-cmd "pg_isready -U invoiceai" --health-interval 5s --health-retries 20
+  steps:
+   - uses: actions/checkout@v4
+   - uses: actions/setup-dotnet@v4
+     with: {global-json-file: InvoiceAI/global.json}
+   - uses: actions/setup-node@v4
+     with: {node-version: "24.19.0"}
+   - run: bash scripts/validate.sh
+   - run: docker build -f deploy/Minio.Dockerfile -t invoiceai-test-minio .
+   - run: docker run -d --name invoiceai-test-minio -p 9000:9000 -e MINIO_ROOT_USER=invoiceai-storage -e MINIO_ROOT_PASSWORD=dummy-storage-password-change-me invoiceai-test-minio
+   - run: |
+      for i in {1..30}; do curl -fsS http://127.0.0.1:9000/minio/health/live && break; sleep 1; done
+      curl -fsS http://127.0.0.1:9000/minio/health/live
+      dotnet test -c Release --no-build --filter 'Category=Integration'
+   - run: docker compose up -d --build --wait
+   - run: python scripts/smoke.py --base-url http://127.0.0.1:8080
+   - run: |
+      cd src/invoiceai-web
+      npx playwright install --with-deps chromium
+      CHROMIUM_PATH="$(find ~/.cache/ms-playwright -path '*/chrome-linux64/chrome' -type f | head -1)" npx playwright test

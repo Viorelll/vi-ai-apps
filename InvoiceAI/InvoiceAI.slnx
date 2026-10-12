@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/InvoiceAI.Ai/InvoiceAI.Ai.csproj" />
+    <Project Path="src/InvoiceAI.Api/InvoiceAI.Api.csproj" />
+    <Project Path="src/InvoiceAI.Contracts/InvoiceAI.Contracts.csproj" />
+    <Project Path="src/InvoiceAI.Database/InvoiceAI.Database.csproj" />
+    <Project Path="src/InvoiceAI.Domain/InvoiceAI.Domain.csproj" />
+    <Project Path="src/InvoiceAI.Infrastructure/InvoiceAI.Infrastructure.csproj" />
+    <Project Path="src/InvoiceAI.Services/InvoiceAI.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/InvoiceAI.Tests/InvoiceAI.Tests.csproj" />
+  </Folder>
+</Solution>

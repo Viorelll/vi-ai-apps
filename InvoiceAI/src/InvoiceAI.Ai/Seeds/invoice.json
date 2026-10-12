@@ -1,0 +1,310 @@
+{
+  "status": "succeeded",
+  "analyzeResult": {
+    "apiVersion": "2024-11-30",
+    "modelId": "prebuilt-invoice",
+    "content": "InvoiceAI - ARTIFICIAL DEMO INVOICE\nVendor: Seed Supplies SRL\nInvoice: SEED-001\nDate: 2026-10-11\nItem: Stationery | quantity 2 | unit price 50.00 | net amount 100.00\nSubtotal: 100.00 MDL\nTax: 20.00 MDL\nTotal: 119.00 MDL\nArtificial fixture, no real financial transaction.",
+    "documents": [
+      {
+        "docType": "invoice",
+        "fields": {
+          "VendorName": {
+            "type": "string",
+            "content": "Seed Supplies SRL",
+            "confidence": 0.97,
+            "boundingRegions": [
+              {
+                "pageNumber": 1,
+                "polygon": [
+                  1,
+                  1,
+                  3,
+                  1,
+                  3,
+                  1.3,
+                  1,
+                  1.3
+                ]
+              }
+            ],
+            "spans": [
+              {
+                "offset": 0,
+                "length": 17
+              }
+            ],
+            "valueString": "Seed Supplies SRL"
+          },
+          "InvoiceDate": {
+            "type": "date",
+            "content": "2026-10-11",
+            "confidence": 0.97,
+            "boundingRegions": [
+              {
+                "pageNumber": 1,
+                "polygon": [
+                  1,
+                  1,
+                  3,
+                  1,
+                  3,
+                  1.3,
+                  1,
+                  1.3
+                ]
+              }
+            ],
+            "spans": [
+              {
+                "offset": 0,
+                "length": 10
+              }
+            ],
+            "valueDate": "2026-10-11"
+          },
+          "SubTotal": {
+            "type": "currency",
+            "content": "100.00 MDL",
+            "confidence": 0.97,
+            "boundingRegions": [
+              {
+                "pageNumber": 1,
+                "polygon": [
+                  1,
+                  1,
+                  3,
+                  1,
+                  3,
+                  1.3,
+                  1,
+                  1.3
+                ]
+              }
+            ],
+            "spans": [
+              {
+                "offset": 0,
+                "length": 38
+              }
+            ],
+            "valueCurrency": {
+              "amount": 100,
+              "currencyCode": "MDL"
+            }
+          },
+          "TotalTax": {
+            "type": "currency",
+            "content": "20.00 MDL",
+            "confidence": 0.97,
+            "boundingRegions": [
+              {
+                "pageNumber": 1,
+                "polygon": [
+                  1,
+                  1,
+                  3,
+                  1,
+                  3,
+                  1.3,
+                  1,
+                  1.3
+                ]
+              }
+            ],
+            "spans": [
+              {
+                "offset": 0,
+                "length": 37
+              }
+            ],
+            "valueCurrency": {
+              "amount": 20,
+              "currencyCode": "MDL"
+            }
+          },
+          "InvoiceTotal": {
+            "type": "currency",
+            "content": "119.00 MDL",
+            "confidence": 0.97,
+            "boundingRegions": [
+              {
+                "pageNumber": 1,
+                "polygon": [
+                  1,
+                  1,
+                  3,
+                  1,
+                  3,
+                  1.3,
+                  1,
+                  1.3
+                ]
+              }
+            ],
+            "spans": [
+              {
+                "offset": 0,
+                "length": 38
+              }
+            ],
+            "valueCurrency": {
+              "amount": 119,
+              "currencyCode": "MDL"
+            }
+          },
+          "InvoiceId": {
+            "type": "string",
+            "content": "SEED-001",
+            "confidence": 0.97,
+            "boundingRegions": [
+              {
+                "pageNumber": 1,
+                "polygon": [
+                  1,
+                  1,
+                  3,
+                  1,
+                  3,
+                  1.3,
+                  1,
+                  1.3
+                ]
+              }
+            ],
+            "spans": [
+              {
+                "offset": 0,
+                "length": 8
+              }
+            ],
+            "valueString": "SEED-001"
+          },
+          "Items": {
+            "type": "array",
+            "valueArray": [
+              {
+                "type": "object",
+                "valueObject": {
+                  "Description": {
+                    "type": "string",
+                    "content": "Stationery",
+                    "confidence": 0.97,
+                    "boundingRegions": [
+                      {
+                        "pageNumber": 1,
+                        "polygon": [
+                          1,
+                          1,
+                          3,
+                          1,
+                          3,
+                          1.3,
+                          1,
+                          1.3
+                        ]
+                      }
+                    ],
+                    "spans": [
+                      {
+                        "offset": 0,
+                        "length": 10
+                      }
+                    ],
+                    "valueString": "Stationery"
+                  },
+                  "Quantity": {
+                    "type": "number",
+                    "content": "2",
+                    "confidence": 0.97,
+                    "boundingRegions": [
+                      {
+                        "pageNumber": 1,
+                        "polygon": [
+                          1,
+                          1,
+                          3,
+                          1,
+                          3,
+                          1.3,
+                          1,
+                          1.3
+                        ]
+                      }
+                    ],
+                    "spans": [
+                      {
+                        "offset": 0,
+                        "length": 1
+                      }
+                    ],
+                    "valueNumber": 2
+                  },
+                  "UnitPrice": {
+                    "type": "currency",
+                    "content": "50.00 MDL",
+                    "confidence": 0.97,
+                    "boundingRegions": [
+                      {
+                        "pageNumber": 1,
+                        "polygon": [
+                          1,
+                          1,
+                          3,
+                          1,
+                          3,
+                          1.3,
+                          1,
+                          1.3
+                        ]
+                      }
+                    ],
+                    "spans": [
+                      {
+                        "offset": 0,
+                        "length": 37
+                      }
+                    ],
+                    "valueCurrency": {
+                      "amount": 50,
+                      "currencyCode": "MDL"
+                    }
+                  },
+                  "Amount": {
+                    "type": "currency",
+                    "content": "100.00 MDL",
+                    "confidence": 0.97,
+                    "boundingRegions": [
+                      {
+                        "pageNumber": 1,
+                        "polygon": [
+                          1,
+                          1,
+                          3,
+                          1,
+                          3,
+                          1.3,
+                          1,
+                          1.3
+                        ]
+                      }
+                    ],
+                    "spans": [
+                      {
+                        "offset": 0,
+                        "length": 38
+                      }
+                    ],
+                    "valueCurrency": {
+                      "amount": 100,
+                      "currencyCode": "MDL"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

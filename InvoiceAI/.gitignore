@@ -1,0 +1,10 @@
+/output/
+/.local/
+/test-results/
+/playwright-report/
+**/test-results/
+**/playwright-report/
+.env.*
+!.env.example
+
+**/__pycache__/

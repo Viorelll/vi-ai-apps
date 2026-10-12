@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../InvoiceAI.Domain/InvoiceAI.Domain.csproj" /><ProjectReference Include="../InvoiceAI.Contracts/InvoiceAI.Contracts.csproj" /></ItemGroup></Project>

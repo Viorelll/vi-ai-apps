@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "invoiceai.contracts": {
+        "type": "Project"
+      },
+      "invoiceai.domain": {
+        "type": "Project"
+      }
+    }
+  }
+}

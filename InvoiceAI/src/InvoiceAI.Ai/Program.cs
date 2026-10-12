@@ -1,0 +1,27 @@
+using InvoiceAI.Ai.Configuration;
+using InvoiceAI.Ai.Middleware;
+using InvoiceAI.Ai.Providers.Extraction;
+using InvoiceAI.Ai.Providers.Foundry;
+using InvoiceAI.Ai.Tools;
+using InvoiceAI.Ai.Providers.Safety;
+using OpenTelemetry.Trace;
+using InvoiceAI.Infrastructure;
+using InvoiceAI.Infrastructure.Ai;
+if (args.Contains("--health-check")) { Environment.ExitCode = await InvoiceAI.Infrastructure.Health.HttpHealthProbe.CheckAsync(true); return; }
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+builder.Services.AddObjectStorage(builder.Configuration);
+builder.Services.AddOptions<InternalOptions>().Bind(builder.Configuration.GetSection("Internal")).Validate(x => x.Key.Length >= 16, "Internal key too short").ValidateOnStart();
+builder.Services.AddOptions<ProviderOptions>().Bind(builder.Configuration.GetSection("Providers")).Validate(x => x.Mode is "Demo" or "Azure" && x.MaxToolRounds is >= 0 and <= 5 && x.MaxToolCalls is >= 1 and <= 10 && x.MaxRunTokens is >= 1000 and <= 20000 && x.MaxOutputTokens is >= 100 and <= 2000, "Provider mode/limits invalid").ValidateOnStart();
+builder.Services.AddOptions<SafetyOptions>().Bind(builder.Configuration.GetSection("Safety"));
+builder.Services.AddHttpClient<PromptShieldClient>(h => h.Timeout = TimeSpan.FromSeconds(15)).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+builder.Services.AddOpenTelemetry().WithTracing(t => t.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation());
+builder.Services.AddTransient<DemoExtractionProvider>();
+builder.Services.AddSingleton<InvoiceToolExecutor>();
+builder.Services.AddHttpClient<DocumentIntelligenceClient>(h => h.Timeout = TimeSpan.FromSeconds(55)).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+builder.Services.AddHttpClient<FoundryExplanationProvider>(h => h.Timeout = TimeSpan.FromSeconds(55)).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+var app = builder.Build();
+app.UseMiddleware<InternalKeyMiddleware>();
+app.Use(async (ctx, next) => { try { await next(ctx); } catch (GatewayException e) { ctx.Response.StatusCode = e.Transient ? 503 : 422; ctx.Response.Headers.RetryAfter = e.RetryAfterSeconds.ToString(); await ctx.Response.WriteAsJsonAsync(new { code = e.Code, traceId = ctx.TraceIdentifier, inputTokens = e.InputTokens, outputTokens = e.OutputTokens }); } catch (Exception e) when (e is not OperationCanceledException) { ctx.Response.StatusCode = 502; await ctx.Response.WriteAsJsonAsync(new { code = "AI_PROVIDER_ERROR", traceId = ctx.TraceIdentifier }); } });
+app.MapControllers();
+await app.RunAsync();
