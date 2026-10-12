@@ -229,13 +229,6 @@
           "xunit.extensibility.core": "[2.9.3]"
         }
       },
-      "dataai.ai": {
-        "type": "Project",
-        "dependencies": {
-          "DataAI.Application": "[1.0.0, )",
-          "DataAI.Domain": "[1.0.0, )"
-        }
-      },
       "dataai.api": {
         "type": "Project",
         "dependencies": {
@@ -268,12 +261,10 @@
         "type": "Project",
         "dependencies": {
           "AWSSDK.S3": "[4.0.104.2, )",
-          "DataAI.Ai": "[1.0.0, )",
           "DataAI.Application": "[1.0.0, )",
           "DataAI.Domain": "[1.0.0, )"
         }
       }
-    },
-    "net10.0/linux-x64": {}
+    }
   }
 }

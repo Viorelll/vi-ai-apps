@@ -16,13 +16,6 @@
         "resolved": "4.0.102.9",
         "contentHash": "VWGkR0QXDTmThusATC6I9IX06YtYeQNF+1/v6vBbfzIC+MaAuNjYn0aSTIyX+abciZvFhuSSi0d6/pC93wROCw=="
       },
-      "dataai.ai": {
-        "type": "Project",
-        "dependencies": {
-          "DataAI.Application": "[1.0.0, )",
-          "DataAI.Domain": "[1.0.0, )"
-        }
-      },
       "dataai.application": {
         "type": "Project",
         "dependencies": {
@@ -32,7 +25,6 @@
       "dataai.domain": {
         "type": "Project"
       }
-    },
-    "net10.0/linux-x64": {}
+    }
   }
 }

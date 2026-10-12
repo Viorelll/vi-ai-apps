@@ -9,7 +9,7 @@ Aplicația este izolată în acest director și folosește cinci servicii perman
 Necesită Docker Compose v2.40+ și acces la registry-urile Docker/npm/NuGet. În acest mediu:
 
 ```sh
-cd /workspace/vi-ai-apps/DataAI
+cd /workspace/vi-ai-apps/07-data-ai
 cp .env.example .env
 bash scripts/install-cloud.sh
 bash scripts/start-cloud.sh
