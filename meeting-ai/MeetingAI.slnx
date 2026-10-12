@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="src/MeetingAI.Domain/MeetingAI.Domain.csproj" />
+  <Project Path="src/MeetingAI.Database/MeetingAI.Database.csproj" />
+  <Project Path="src/MeetingAI.Infrastructure/MeetingAI.Infrastructure.csproj" />
+  <Project Path="src/MeetingAI.Ai/MeetingAI.Ai.csproj" />
+  <Project Path="src/MeetingAI.Api/MeetingAI.Api.csproj" />
+  <Project Path="tests/MeetingAI.Tests/MeetingAI.Tests.csproj" />
+</Solution>
