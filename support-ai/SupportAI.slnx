@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SupportAI.Ai/SupportAI.Ai.csproj" />
+    <Project Path="src/SupportAI.Api/SupportAI.Api.csproj" />
+    <Project Path="src/SupportAI.Application/SupportAI.Application.csproj" />
+    <Project Path="src/SupportAI.Database/SupportAI.Database.csproj" />
+    <Project Path="src/SupportAI.Domain/SupportAI.Domain.csproj" />
+    <Project Path="src/SupportAI.Infrastructure/SupportAI.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SupportAI.IntegrationTests/SupportAI.IntegrationTests.csproj" />
+    <Project Path="tests/SupportAI.UnitTests/SupportAI.UnitTests.csproj" />
+  </Folder>
+</Solution>

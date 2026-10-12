@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../ProcureAI.Domain/ProcureAI.Domain.csproj" />
+    <ProjectReference Include="../ProcureAI.Application/ProcureAI.Application.csproj" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.104.2" />
+  </ItemGroup>
+</Project>

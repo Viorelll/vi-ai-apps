@@ -1,13 +1,11 @@
-# DocuAI
+# VI AI Apps
 
-Codul aplicației și configurațiile ei se află în directorul [`docu-ai/`](docu-ai/README.md).
+Aplicații independente, fiecare cu configurația și documentația sa:
 
-Pentru pornire locală, copiază `docu-ai/.env.example` în `docu-ai/.env`, completează valorile necesare, apoi rulează din rădăcina repo-ului:
+- [DocuAI](docu-ai/README.md): asistent pentru documente.
+- [SupportAI](support-ai/README.md): asistent de suport cu comenzi demonstrative, dovezi, politici citate și acțiuni locale confirmate.
 
-```sh
-docker compose --env-file docu-ai/.env -f docu-ai/compose.yaml up --build
-```
+- [ProcureAI](procure-ai/README.md): asistent pentru compararea ofertelor și achiziții.
+- [ContractAI](contract-ai/README.md): analiză și comparație de contracte, cu obligații, termene și citări.
 
-## ContractAI
-
-Noua aplicație pentru analiza și compararea contractelor se află în [`contract-ai/`](contract-ai/README.md), cu proiecte separate .NET 10, React, PostgreSQL și MinIO. Instrucțiunile de configurare, testare și limitele profilului sunt în acel director.
+Pentru pornire, urmează instrucțiunile din directorul aplicației. Configurările reale se păstrează în `.env`, ignorat de Git.

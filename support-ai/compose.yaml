@@ -1,0 +1,103 @@
+name: supportai
+x-build: &build
+  context: .
+  args:
+    HTTP_PROXY: ${HTTP_PROXY:-}
+    HTTPS_PROXY: ${HTTPS_PROXY:-}
+    NO_PROXY: ${NO_PROXY:-}
+  secrets: [proxy_ca]
+x-storage: &storage
+  Storage__Endpoint: http://minio:9000
+  Storage__AccessKey: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER}
+  Storage__SecretKey: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+  Storage__Bucket: supportai
+x-api-env: &api-env
+  <<: *storage
+  ASPNETCORE_HTTP_PORTS: "8080"
+  ConnectionStrings__App: Host=db;Database=supportai;Username=supportai;Password=${DB_PASSWORD:?set DB_PASSWORD}
+  Ai__BaseUrl: http://ai:8080/
+  Internal__Key: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
+  Foundry__Mode: ${AI_MODE:-Foundry}
+  Rag__Provider: ${RAG_PROVIDER:-NoRag}
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: supportai
+      POSTGRES_USER: supportai
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U supportai -d supportai"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  minio:
+    build:
+      <<: *build
+      dockerfile: deploy/Minio.Dockerfile
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+    volumes: ["objectdata:/data"]
+    healthcheck:
+      test: ["CMD", "healthprobe"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  ai:
+    build:
+      <<: *build
+      dockerfile: deploy/Ai.Dockerfile
+    environment:
+      <<: *storage
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Internal__Key: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
+      Foundry__Mode: ${AI_MODE:-Foundry}
+      Rag__Provider: ${RAG_PROVIDER:-NoRag}
+      Foundry__OpenAiEndpoint: ${FOUNDRY_OPENAI_ENDPOINT:-}
+      Foundry__ApiKey: ${FOUNDRY_API_KEY:-}
+      Foundry__ChatDeployment: ${CHAT_DEPLOYMENT:-supportai-chat}
+      ContentUnderstanding__Endpoint: ${CU_ENDPOINT:-}
+      ContentUnderstanding__ApiKey: ${CU_API_KEY:-}
+      Safety__PromptShieldsEnabled: ${PROMPT_SHIELDS_ENABLED:-false}
+      Safety__Endpoint: ${SAFETY_ENDPOINT:-}
+      Safety__ApiKey: ${SAFETY_API_KEY:-}
+    depends_on:
+      minio: { condition: service_healthy }
+    restart: unless-stopped
+  migrate:
+    build:
+      <<: *build
+      dockerfile: deploy/Api.Dockerfile
+    environment: *api-env
+    command: ["--migrate"]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+  api:
+    build:
+      <<: *build
+      dockerfile: deploy/Api.Dockerfile
+    environment: *api-env
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      minio: { condition: service_healthy }
+      ai: { condition: service_started }
+    restart: unless-stopped
+  web:
+    build:
+      <<: *build
+      dockerfile: deploy/Web.Dockerfile
+    ports: ["127.0.0.1:${WEB_PORT:-8080}:80"]
+    depends_on: [api]
+    restart: unless-stopped
+volumes:
+  pgdata:
+  objectdata:
+secrets:
+  # Optional build-time trust anchor. /dev/null keeps normal machines unchanged.
+  proxy_ca:
+    file: ${SSL_CERT_FILE:-/dev/null}

@@ -1,0 +1,6 @@
+# Only for host-run integration tests; ports remain bound to loopback.
+services:
+  db:
+    ports: ["127.0.0.1:5433:5432"]
+  minio:
+    ports: ["127.0.0.1:9000:9000"]
