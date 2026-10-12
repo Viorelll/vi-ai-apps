@@ -1,14 +1,14 @@
 name: InvoiceAI
 on:
  push:
-  paths: ["InvoiceAI/**"]
+  paths: ["03-InvoiceAI/**"]
  pull_request:
-  paths: ["InvoiceAI/**"]
+  paths: ["03-InvoiceAI/**"]
 jobs:
  validate:
   runs-on: ubuntu-latest
   defaults:
-   run: {working-directory: InvoiceAI}
+   run: {working-directory: 03-InvoiceAI}
   services:
    postgres:
     image: postgres:17.6
@@ -21,7 +21,7 @@ jobs:
   steps:
    - uses: actions/checkout@v4
    - uses: actions/setup-dotnet@v4
-     with: {global-json-file: InvoiceAI/global.json}
+     with: {global-json-file: 03-InvoiceAI/global.json}
    - uses: actions/setup-node@v4
      with: {node-version: "24.19.0"}
    - run: bash scripts/validate.sh
