@@ -33,7 +33,7 @@ jobs:
         working-directory: 18-moderate-ai/src/moderateai-web
       - run: python3 scripts/cloud-build.py
       - run: python3 scripts/create-env.py && python3 scripts/prepare-s3.py
-      - run: docker compose -f compose.yaml -f compose.test.yaml up -d --no-build --wait
+      - run: docker compose -f compose.yaml -f compose.test.yaml up -d --no-build --wait --wait-timeout 120
       - run: python3 scripts/readiness.py && python3 scripts/test-integration.py && python3 scripts/smoke.py
       - run: npx playwright install --with-deps chromium && npm run test:e2e
         working-directory: 18-moderate-ai/src/moderateai-web
