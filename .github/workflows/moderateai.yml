@@ -45,6 +45,28 @@ jobs:
             } > /tmp/moderateai-compose-diagnostics.md
             cat /tmp/moderateai-compose-diagnostics.md
             cat /tmp/moderateai-compose-diagnostics.md >> "$GITHUB_STEP_SUMMARY"
+            docker compose -f compose.yaml -f compose.test.yaml ps --all --format json > /tmp/moderateai-compose-state.jsonl || true
+            docker compose -f compose.yaml -f compose.test.yaml logs --no-color --tail=80 > /tmp/moderateai-compose-logs.txt 2>&1 || true
+            python3 - <<'PY'
+            import json
+            import re
+            from pathlib import Path
+
+            state = Path('/tmp/moderateai-compose-state.jsonl').read_text().splitlines()
+            for line in state:
+                try:
+                    item = json.loads(line)
+                    message = ' '.join(str(item.get(key, '')) for key in ('Service', 'State', 'Health', 'ExitCode')).strip()
+                    print(f'::error title=Compose service state::{message}')
+                except json.JSONDecodeError:
+                    continue
+
+            logs = Path('/tmp/moderateai-compose-logs.txt').read_text(errors='replace').splitlines()
+            relevant = [line for line in logs if re.search(r'error|failed|forbidden|denied|refused|unhealthy|fatal|exception|unavailable', line, re.I)]
+            for line in relevant[-12:]:
+                message = line[-700:].replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A').replace(':', '%3A').replace(',', '%2C')
+                print(f'::error title=Compose startup log::{message}')
+            PY
             exit 1
           fi
       - run: python3 scripts/readiness.py && python3 scripts/test-integration.py && python3 scripts/smoke.py
