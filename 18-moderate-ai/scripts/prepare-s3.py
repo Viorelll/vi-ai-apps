@@ -18,6 +18,7 @@ if not access_key or not secret_key:
     raise SystemExit("MINIO_ROOT_USER and MINIO_ROOT_PASSWORD must be configured in .env")
 directory = root / ".dev"
 directory.mkdir(exist_ok=True)
+directory.chmod(0o700)
 config = directory / "s3.json"
 config.write_text(
     json.dumps(
@@ -32,5 +33,7 @@ config.write_text(
         }
     )
 )
-config.chmod(0o600)
+# The file is read-only in Compose. Its private parent prevents other host
+# users from reaching it while allowing rootless container UID mappings to read it.
+config.chmod(0o644)
 print("Local S3 identity configuration is ready.")
