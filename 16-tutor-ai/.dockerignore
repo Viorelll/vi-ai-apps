@@ -1,0 +1,10 @@
+**/bin
+**/obj
+**/node_modules
+.git
+.env
+.dev
+**/test-results
+**/playwright-report
+artifacts/minio/build.sha256
+artifacts/minio/source-commit.txt

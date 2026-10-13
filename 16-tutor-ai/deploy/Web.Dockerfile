@@ -1,0 +1,10 @@
+FROM node:24.19.0 AS build
+WORKDIR /app
+COPY src/tutorai-web/package*.json ./
+RUN npm ci --no-audit --no-fund
+COPY src/tutorai-web/ ./
+RUN npm run build
+FROM nginx:1.28-alpine
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 8080

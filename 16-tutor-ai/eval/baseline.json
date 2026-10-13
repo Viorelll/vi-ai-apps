@@ -1,0 +1,1 @@
+{"version":"tutor-v1","ruleVersion":"last-two-v1","cases":[{"topic":"RAG","kind":"single_choice","answer":"Retriever","expectedScore":1},{"topic":"RAG","kind":"single_choice","answer":"Browser","expectedScore":0}],"adaptation":{"initial":1,"scores":[1,1],"expected":2},"liveJudge":"requires a separate configured deployment"}

@@ -1,0 +1,9 @@
+{
+  "checkedAtUtc": "2026-10-12T00:00:00Z",
+  "excerpts": {
+    "RAG": "Retrieval-augmented generation (RAG) is a pattern that extends LLM capabilities by grounding responses in your proprietary content. While conceptually simple, RAG implementations face significant challenges. LLMs accept limited token inputs. Your retrieval system must return highly relevant, concise results - not exhaustive document dumps.",
+    ".NET / EF Core": "DbContext is not thread-safe. Don't share contexts between threads. Make sure to await all async calls before continuing to use the context instance.",
+    "Foundry agents": "The model generates function calls and structured arguments based on the functions you specify. Your application executes the functions and returns the results to the model, so you remain in control of the actions taken."
+  },
+  "notes": "Exact excerpts from the referenced Microsoft Learn pages, reviewed during implementation. Demo exercises are authored practice questions, not exam questions."
+}
