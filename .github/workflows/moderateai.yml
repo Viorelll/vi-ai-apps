@@ -33,7 +33,20 @@ jobs:
         working-directory: 18-moderate-ai/src/moderateai-web
       - run: python3 scripts/cloud-build.py
       - run: python3 scripts/create-env.py && python3 scripts/prepare-s3.py
-      - run: docker compose -f compose.yaml -f compose.test.yaml up -d --no-build --wait --wait-timeout 120
+      - name: Start test containers
+        run: |
+          if ! docker compose -f compose.yaml -f compose.test.yaml up -d --no-build --wait --wait-timeout 120; then
+            {
+              echo '## Container startup diagnostics'
+              echo '### Service state'
+              docker compose -f compose.yaml -f compose.test.yaml ps --all || true
+              echo '### Recent container logs'
+              docker compose -f compose.yaml -f compose.test.yaml logs --no-color --tail=40 || true
+            } > /tmp/moderateai-compose-diagnostics.md
+            cat /tmp/moderateai-compose-diagnostics.md
+            cat /tmp/moderateai-compose-diagnostics.md >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
       - run: python3 scripts/readiness.py && python3 scripts/test-integration.py && python3 scripts/smoke.py
       - run: npx playwright install --with-deps chromium && npm run test:e2e
         working-directory: 18-moderate-ai/src/moderateai-web
