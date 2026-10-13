@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BuildBudgetAI.Ai/BuildBudgetAI.Ai.csproj" />
+    <Project Path="src/BuildBudgetAI.Api/BuildBudgetAI.Api.csproj" />
+    <Project Path="src/BuildBudgetAI.Database/BuildBudgetAI.Database.csproj" />
+    <Project Path="src/BuildBudgetAI.Domain/BuildBudgetAI.Domain.csproj" />
+    <Project Path="src/BuildBudgetAI.Infrastructure/BuildBudgetAI.Infrastructure.csproj" />
+    <Project Path="src/BuildBudgetAI.Services/BuildBudgetAI.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BuildBudgetAI.Tests/BuildBudgetAI.Tests.csproj" />
+  </Folder>
+</Solution>

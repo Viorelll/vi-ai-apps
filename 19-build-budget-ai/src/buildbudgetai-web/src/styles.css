@@ -1,0 +1,487 @@
+:root {
+  font-family: "DM Sans", system-ui, sans-serif;
+  color: #25362f;
+  background: #f5f6f2;
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 5%;
+  border-bottom: 1px solid #dfe4db;
+  background: #fff;
+}
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-family: Manrope, sans-serif;
+  font-weight: 800;
+  font-size: 23px;
+}
+.brand span:not(.mark) {
+  color: #769842;
+}
+.brand small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #8b968d;
+  margin-top: 4px;
+}
+.mark {
+  background: #253f31;
+  color: #d8e8aa;
+  padding: 8px 14px;
+  border-radius: 10px;
+}
+.mode {
+  font-size: 12px;
+  background: #eef2e5;
+  border: 1px solid #dbe4ca;
+  color: #567438;
+  border-radius: 30px;
+  padding: 9px 16px;
+}
+main {
+  max-width: 1500px;
+  margin: auto;
+  padding: 40px 5%;
+}
+.intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 20px;
+}
+.eyebrow {
+  letter-spacing: 2px;
+  font-size: 10px;
+  color: #6e8757;
+  font-weight: 700;
+}
+h1 {
+  font-family: Manrope, sans-serif;
+  font-size: clamp(28px, 3.3vw, 44px);
+  letter-spacing: -1.6px;
+  line-height: 1.2;
+  margin: 15px 0;
+}
+h1 em {
+  font-style: normal;
+  color: #729548;
+}
+.intro p:not(.eyebrow) {
+  color: #7a857c;
+  font-size: 14px;
+  max-width: 540px;
+  line-height: 1.7;
+}
+.panel {
+  background: #fff;
+  border: 1px solid #dfe5da;
+  border-radius: 14px;
+  padding: 25px;
+  margin-bottom: 22px;
+  box-shadow: 0 3px 8px #23352303;
+}
+.plan-bar {
+  display: flex;
+  align-items: end;
+  gap: 18px;
+}
+.plan-bar > div {
+  flex: 1;
+}
+.plan-bar > label:last-child {
+  flex: 1;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 24px;
+}
+h2 {
+  font-family: Manrope, sans-serif;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 22px;
+}
+h2 > span {
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  border: 1px solid #d8e1cb;
+  color: #6c854d;
+  background: #f3f6ed;
+  padding: 5px;
+  border-radius: 5px;
+}
+h2 > small {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 400;
+  color: #7b8b7e;
+}
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #68776c;
+}
+input,
+select,
+textarea {
+  font: inherit;
+  font-weight: 400;
+  font-size: 13px;
+  color: #263c2d;
+  background: #fbfcfa;
+  border: 1px solid #dce3d6;
+  border-radius: 7px;
+  padding: 11px;
+  width: 100%;
+  margin-top: 7px;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #a8c886;
+  outline-offset: 1px;
+}
+button,
+.export {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 12px 17px;
+  background: #2b4535;
+  color: #fff;
+  border: 1px solid #2b4535;
+  border-radius: 7px;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.secondary {
+  background: #fff;
+  color: #3c553e;
+  border-color: #d4dfc7;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 16px;
+}
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 15px 0;
+}
+.checkbox input {
+  width: auto;
+  margin: 0;
+}
+.hint {
+  font-size: 11px;
+  color: #899383;
+  line-height: 1.65;
+}
+.upload {
+  display: block;
+  text-align: center;
+  padding: 24px 8px;
+  border: 1px dashed #b6c99d;
+  border-radius: 9px;
+  color: #6a834b;
+  background: #f8faf3;
+  cursor: pointer;
+  font-size: 12px;
+  margin: 20px 0;
+}
+.upload input {
+  width: 100%;
+  font-size: 10px;
+  background: transparent;
+  border: none;
+  padding: 8px 0;
+}
+.documents article {
+  padding: 15px 0;
+  border-top: 1px solid #edf0e9;
+}
+.documents strong {
+  font-size: 12px;
+  display: block;
+  overflow-wrap: anywhere;
+  margin-bottom: 8px;
+}
+.badge {
+  display: inline-block;
+  border-radius: 20px;
+  background: #edf4e4;
+  color: #6a8446;
+  padding: 5px 9px;
+  font-size: 10px;
+}
+.badge.Failed {
+  background: #fff1e6;
+  color: #9b6438;
+}
+.doc-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 10px;
+}
+.doc-actions button {
+  padding: 4px 7px;
+  font-size: 10px;
+  background: white;
+  color: #748368;
+  border: 1px solid #dce3d5;
+}
+a {
+  color: #56773d;
+  font-size: 11px;
+}
+.empty {
+  padding: 14px 0;
+  color: #99a092;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.note {
+  padding: 14px 20px;
+  color: #78856e;
+  border-left: 2px solid #b2c58f;
+}
+.note h3 {
+  font-size: 12px;
+  color: #526947;
+}
+.note p {
+  font-size: 11px;
+  line-height: 1.8;
+}
+hr {
+  border: 0;
+  border-top: 1px solid #edf0e8;
+  margin: 24px 0;
+}
+.table-scroll {
+  overflow: auto;
+  margin: 20px 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+th {
+  font-size: 10px;
+  color: #87937c;
+  padding: 13px 10px;
+  background: #f6f8f2;
+}
+td {
+  padding: 16px 10px;
+  border-bottom: 1px solid #e8eee1;
+}
+small {
+  display: block;
+  font-size: 10px;
+  color: #8a9583;
+  margin-top: 5px;
+}
+.total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f4f7ed;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+.total p {
+  font-size: 11px;
+  color: #799264;
+  margin: 0 0 6px;
+}
+.total strong {
+  font-size: 40px;
+  letter-spacing: -1px;
+  color: #304b33;
+}
+.total strong small {
+  display: inline;
+  font-size: 18px;
+  color: #7d935e;
+}
+.formula {
+  border-bottom: 1px solid #edf1e7;
+  padding: 14px 0;
+  font-size: 12px;
+}
+.formula b {
+  font-size: 11px;
+}
+.formula p {
+  color: #728262;
+}
+.export {
+  display: inline-block;
+  text-decoration: none;
+  margin-top: 20px;
+  background: white;
+  color: #587047;
+  border-color: #d8e1cc;
+}
+.unknown {
+  display: inline-block;
+  font-size: 10px;
+  color: #ad7633;
+  background: #fff5e6;
+  margin: 3px;
+  padding: 5px;
+  border-radius: 4px;
+}
+.ask {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.ask textarea {
+  height: 70px;
+  resize: vertical;
+}
+.answer {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #607154;
+  margin-top: 20px;
+}
+.source {
+  border: 1px solid #e2e9d7;
+  border-radius: 7px;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 11px;
+}
+.source p {
+  white-space: pre-wrap;
+  max-height: 240px;
+  overflow: auto;
+}
+.source summary {
+  cursor: pointer;
+  color: #6f884e;
+}
+.error {
+  background: #fff0e9;
+  color: #9c462f;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  font-size: 13px;
+}
+.working {
+  color: #72904e;
+  font-size: 12px;
+}
+footer {
+  text-align: center;
+  color: #9ca590;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  margin-top: 24px;
+}
+@media (max-width: 1000px) {
+  .workspace {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .plan-bar {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 720px) {
+  main {
+    padding: 25px 5%;
+  }
+  .intro {
+    display: block;
+  }
+  .intro button {
+    margin-top: 12px;
+  }
+  .workspace {
+    display: block;
+  }
+  .plan-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .panel {
+    padding: 20px;
+  }
+  header {
+    padding: 18px 5%;
+  }
+  .mode {
+    font-size: 10px;
+    padding: 7px;
+  }
+  .brand {
+    font-size: 18px;
+  }
+  .brand small {
+    font-size: 7px;
+  }
+  .ask {
+    display: block;
+  }
+  .ask button {
+    margin-top: 10px;
+  }
+  h2 {
+    flex-wrap: wrap;
+  }
+  .total strong {
+    font-size: 32px;
+  }
+}
+
+.draft {
+  background: #f8faf3;
+  border: 1px solid #dfe7d4;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 15px 0;
+  font-size: 12px;
+}
+.draft button {
+  margin-left: 10px;
+  padding: 7px;
+}
+.draft > div {
+  margin: 10px 0;
+}

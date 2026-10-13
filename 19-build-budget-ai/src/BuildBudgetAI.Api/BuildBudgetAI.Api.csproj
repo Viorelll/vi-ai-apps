@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <PackageReference
+      Include="Microsoft.EntityFrameworkCore.Design"
+      Version="10.0.6"
+      PrivateAssets="all"
+    />
+    <ProjectReference Include="../BuildBudgetAI.Domain/BuildBudgetAI.Domain.csproj" />
+    <ProjectReference Include="../BuildBudgetAI.Database/BuildBudgetAI.Database.csproj" />
+    <ProjectReference Include="../BuildBudgetAI.Services/BuildBudgetAI.Services.csproj" />
+    <ProjectReference Include="../BuildBudgetAI.Infrastructure/BuildBudgetAI.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

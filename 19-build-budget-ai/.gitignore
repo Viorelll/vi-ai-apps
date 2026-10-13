@@ -1,0 +1,11 @@
+.env
+.dev/compose.cloud.json
+.dev/compose.cloud.json
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/test-results/
+**/playwright-report/
+*.tsbuildinfo
+output/

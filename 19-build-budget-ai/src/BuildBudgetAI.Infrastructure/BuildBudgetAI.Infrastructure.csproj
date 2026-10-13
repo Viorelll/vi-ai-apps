@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../BuildBudgetAI.Domain/BuildBudgetAI.Domain.csproj" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.19.1" />
+  </ItemGroup>
+</Project>

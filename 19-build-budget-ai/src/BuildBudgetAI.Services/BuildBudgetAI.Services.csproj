@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../BuildBudgetAI.Domain/BuildBudgetAI.Domain.csproj" />
+    <ProjectReference Include="../BuildBudgetAI.Database/BuildBudgetAI.Database.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.6" />
+  </ItemGroup>
+</Project>

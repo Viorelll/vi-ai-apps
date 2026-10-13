@@ -1,0 +1,91 @@
+name: buildbudgetai
+x-storage: &storage
+ Storage__Endpoint: http://minio:9000
+ Storage__AccessKey: ${MINIO_ROOT_USER:-dummy-storage-user}
+ Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-dummy-storage-password}
+ Storage__Bucket: buildbudgetai
+x-api-env: &api-env
+ <<: *storage
+ ASPNETCORE_HTTP_PORTS: "8080"
+ ConnectionStrings__App: Host=db;Database=buildbudgetai;Username=buildbudgetai;Password=${DB_PASSWORD:-dummy-database-password}
+ Ai__BaseUrl: http://ai:8080/
+ Ai__Mode: ${AI_MODE:-Demo}
+ Internal__Key: ${INTERNAL_API_KEY:-dummy-internal-key-change-me}
+services:
+ db:
+  image: postgres:17.6-alpine@sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94
+  environment:
+   POSTGRES_DB: buildbudgetai
+   POSTGRES_USER: buildbudgetai
+   POSTGRES_PASSWORD: ${DB_PASSWORD:-dummy-database-password}
+  volumes: [pgdata:/var/lib/postgresql/data]
+  healthcheck:
+   test: ["CMD-SHELL", "pg_isready -U buildbudgetai -d buildbudgetai"]
+   interval: 3s
+   timeout: 3s
+   retries: 30
+  restart: unless-stopped
+ minio:
+  image: chrislusf/seaweedfs:4.06@sha256:a064c6923daf4451c943cec2f437a67523d7792ee589089bc4d4c27a61d78dea
+  command: ["mini", "-dir=/data", "-ip=minio", "-ip.bind=0.0.0.0", "-s3.port=9000", "-s3.config=/etc/seaweedfs/s3.json", "-admin.ui=false", "-webdav=false", "-master.telemetry=false"]
+  volumes:
+   - objectdata:/data
+   - ./.dev/s3.json:/etc/seaweedfs/s3.json:ro
+  healthcheck:
+   test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9333/cluster/status"]
+   interval: 3s
+   timeout: 3s
+   retries: 30
+  restart: unless-stopped
+ ai:
+  build:
+   context: .
+   dockerfile: deploy/Dotnet.Dockerfile
+   args: {PROJECT: Ai}
+  environment:
+   <<: *storage
+   Internal__Key: ${INTERNAL_API_KEY:-dummy-internal-key-change-me}
+   Foundry__Mode: ${AI_MODE:-Demo}
+   Foundry__OpenAiEndpoint: ${FOUNDRY_OPENAI_ENDPOINT:-https://RESOURCE.openai.azure.com/openai/v1/}
+   Foundry__ApiKey: ${FOUNDRY_API_KEY:-dummy-foundry-key}
+   Foundry__ChatDeployment: ${CHAT_DEPLOYMENT:-buildbudgetai-chat}
+   ContentUnderstanding__Endpoint: ${CU_ENDPOINT:-https://RESOURCE.cognitiveservices.azure.com}
+   ContentUnderstanding__ApiKey: ${CU_API_KEY:-dummy-content-understanding-key}
+   ContentUnderstanding__AnalyzerId: ${CU_ANALYZER:-prebuilt-documentSearch}
+   HTTPS_PROXY: ${HTTPS_PROXY:-}
+   HTTP_PROXY: ${HTTP_PROXY:-}
+   NO_PROXY: localhost,127.0.0.1,db,minio,api,ai
+   no_proxy: localhost,127.0.0.1,db,minio,api,ai
+  depends_on:
+   minio: {condition: service_healthy}
+  restart: unless-stopped
+ migrate:
+  build:
+   context: .
+   dockerfile: deploy/Dotnet.Dockerfile
+   args: {PROJECT: Api}
+  environment: *api-env
+  command: ["--migrate"]
+  depends_on:
+   db: {condition: service_healthy}
+  restart: "no"
+ api:
+  build:
+   context: .
+   dockerfile: deploy/Dotnet.Dockerfile
+   args: {PROJECT: Api}
+  environment: *api-env
+  depends_on:
+   migrate: {condition: service_completed_successfully}
+   minio: {condition: service_healthy}
+   ai: {condition: service_started}
+  restart: unless-stopped
+ web:
+  build: {context: ., dockerfile: deploy/Web.Dockerfile}
+  ports: ["127.0.0.1:8080:80"]
+  depends_on:
+   api: {condition: service_started}
+  restart: unless-stopped
+volumes:
+ pgdata:
+ objectdata:
