@@ -1,0 +1,94 @@
+name: evalai
+x-storage: &storage
+ Storage__Endpoint: http://minio:9000
+ Storage__AccessKey: ${MINIO_ROOT_USER:-evalai-storage}
+ Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-replace-local-storage-password}
+ Storage__Bucket: evalai
+x-foundry: &foundry
+ Foundry__Mode: ${FOUNDRY_MODE:-Demo}
+ Foundry__CandidateA: ${CANDIDATE_A:-evalai-a}
+ Foundry__CandidateB: ${CANDIDATE_B:-evalai-b}
+ Foundry__CandidateA__PromptVersion: ${CANDIDATE_A_PROMPT_VERSION:-candidate-v1}
+ Foundry__CandidateB__PromptVersion: ${CANDIDATE_B_PROMPT_VERSION:-candidate-v2}
+ Foundry__JudgeDeployment: ${JUDGE_DEPLOYMENT:-evalai-judge}
+x-api: &api-env
+ <<: [*storage,*foundry]
+ ConnectionStrings__App: Host=db;Database=evalai;Username=evalai;Password=${DB_PASSWORD:-replace-local-db-password}
+ Internal__Key: ${INTERNAL_API_KEY:-replace-local-internal-key}
+ Ai__BaseUrl: http://ai:8080/
+services:
+ db:
+  image: postgres:17.6-alpine
+  environment:
+   POSTGRES_DB: evalai
+   POSTGRES_USER: evalai
+   POSTGRES_PASSWORD: ${DB_PASSWORD:-replace-local-db-password}
+  volumes: [pgdata:/var/lib/postgresql/data]
+  healthcheck:
+   test: [CMD-SHELL, "pg_isready -U evalai -d evalai"]
+   interval: 3s
+   timeout: 3s
+   retries: 30
+  restart: unless-stopped
+ minio:
+  image: chrislusf/seaweedfs:4.06@sha256:a064c6923daf4451c943cec2f437a67523d7792ee589089bc4d4c27a61d78dea
+  command: [mini,-dir=/data,-ip=minio,-ip.bind=0.0.0.0,-s3.port=9000,-s3.config=/etc/seaweedfs/s3.json,-admin.ui=false,-webdav=false,-master.telemetry=false]
+  volumes:
+   - objectdata:/data
+   - ./.dev/s3.json:/etc/seaweedfs/s3.json:ro
+  healthcheck:
+   test: [CMD,wget,-q,-O,/dev/null,http://localhost:8888/health]
+   interval: 3s
+   timeout: 3s
+   retries: 30
+  restart: unless-stopped
+ ai:
+  build: {context: ., dockerfile: deploy/Ai.Dockerfile}
+  environment:
+   <<: [*storage,*foundry]
+   Internal__Key: ${INTERNAL_API_KEY:-replace-local-internal-key}
+   Foundry__OpenAiEndpoint: ${FOUNDRY_OPENAI_ENDPOINT:-https://RESOURCE.openai.azure.com/openai/v1/}
+   Foundry__ApiKey: ${FOUNDRY_API_KEY:-replace-foundry-api-key}
+   ContentUnderstanding__Endpoint: ${CU_ENDPOINT:-https://RESOURCE.cognitiveservices.azure.com/}
+   ContentUnderstanding__ApiKey: ${CU_API_KEY:-replace-content-understanding-key}
+   ContentUnderstanding__Analyzer: ${CU_ANALYZER:-prebuilt-documentSearch}
+   Rag__Provider: ${RAG_PROVIDER:-NoRag}
+  depends_on: {minio: {condition: service_healthy}}
+  healthcheck:
+   test: [CMD,dotnet,EvalAI.Ai.dll,--health]
+   interval: 3s
+   timeout: 3s
+   retries: 30
+  restart: unless-stopped
+ migrate:
+  build: {context: ., dockerfile: deploy/Api.Dockerfile}
+  environment: *api-env
+  command: [--migrate]
+  depends_on: {db: {condition: service_healthy}}
+  restart: 'no'
+ api:
+  build: {context: ., dockerfile: deploy/Api.Dockerfile}
+  environment: *api-env
+  depends_on:
+   migrate: {condition: service_completed_successfully}
+   minio: {condition: service_healthy}
+   ai: {condition: service_healthy}
+  healthcheck:
+   test: [CMD,dotnet,EvalAI.Api.dll,--health]
+   interval: 3s
+   timeout: 3s
+   retries: 30
+  restart: unless-stopped
+ web:
+  build: {context: ., dockerfile: deploy/Web.Dockerfile}
+  ports: ['127.0.0.1:8080:80']
+  depends_on: {api: {condition: service_healthy}}
+  healthcheck:
+   test: [CMD,wget,-q,-O,/dev/null,http://localhost/health]
+   interval: 3s
+   timeout: 3s
+   retries: 30
+  restart: unless-stopped
+volumes:
+ pgdata:
+ objectdata:

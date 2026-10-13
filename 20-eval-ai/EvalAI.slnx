@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EvalAI.Ai/EvalAI.Ai.csproj" />
+    <Project Path="src/EvalAI.Api/EvalAI.Api.csproj" />
+    <Project Path="src/EvalAI.Database/EvalAI.Database.csproj" />
+    <Project Path="src/EvalAI.Domain/EvalAI.Domain.csproj" />
+    <Project Path="src/EvalAI.Infrastructure/EvalAI.Infrastructure.csproj" />
+    <Project Path="src/EvalAI.Services/EvalAI.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EvalAI.Tests/EvalAI.Tests.csproj" />
+  </Folder>
+</Solution>
