@@ -29,6 +29,14 @@ services:
   minio:
     image: chrislusf/seaweedfs:4.06@sha256:a064c6923daf4451c943cec2f437a67523d7792ee589089bc4d4c27a61d78dea
     command: [mini, -dir=/data, -ip=minio, -ip.bind=0.0.0.0, -s3.port=9000, -s3.config=/etc/seaweedfs/s3.json, -admin.ui=false, -webdav=false, -master.telemetry=false]
+    environment:
+      # Keep the internal gRPC master/filer and loopback health checks off the host proxy.
+      HTTP_PROXY: ""
+      HTTPS_PROXY: ""
+      http_proxy: ""
+      https_proxy: ""
+      NO_PROXY: localhost,127.0.0.1,db,minio,api,ai
+      no_proxy: localhost,127.0.0.1,db,minio,api,ai
     volumes:
       - objectdata:/data
       - ./.dev/s3.json:/etc/seaweedfs/s3.json:ro

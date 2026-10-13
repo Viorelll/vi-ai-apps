@@ -21,6 +21,9 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: 18-moderate-ai/src/moderateai-web/package-lock.json
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.0"
       - run: dotnet restore ModerateAI.slnx --locked-mode
       - run: dotnet tool restore
       - run: dotnet csharpier check src tests
@@ -28,8 +31,9 @@ jobs:
       - run: dotnet test ModerateAI.slnx -c Release --no-build --filter 'Category!=Integration' --logger 'trx;LogFileName=unit.trx' --results-directory output/unit
       - run: npm ci && npm run build && npm test && npm run format:check
         working-directory: 18-moderate-ai/src/moderateai-web
+      - run: python3 scripts/cloud-build.py
       - run: python3 scripts/create-env.py && python3 scripts/prepare-s3.py
-      - run: docker compose -f compose.yaml -f compose.test.yaml up -d --build --wait
+      - run: docker compose -f compose.yaml -f compose.test.yaml up -d --no-build --wait
       - run: python3 scripts/readiness.py && python3 scripts/test-integration.py && python3 scripts/smoke.py
       - run: npx playwright install --with-deps chromium && npm run test:e2e
         working-directory: 18-moderate-ai/src/moderateai-web
