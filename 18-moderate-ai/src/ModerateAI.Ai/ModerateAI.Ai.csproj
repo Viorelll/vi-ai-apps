@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.19.1" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.19.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.19.0" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.19.1" />
+        <ProjectReference Include="../ModerateAI.Domain/ModerateAI.Domain.csproj" />
+        <ProjectReference Include="../ModerateAI.Infrastructure/ModerateAI.Infrastructure.csproj" />
+    </ItemGroup>
+</Project>

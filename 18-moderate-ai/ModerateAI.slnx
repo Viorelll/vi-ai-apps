@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/ModerateAI.Domain/ModerateAI.Domain.csproj"/>
+  <Project Path="src/ModerateAI.Database/ModerateAI.Database.csproj"/>
+  <Project Path="src/ModerateAI.Services/ModerateAI.Services.csproj"/>
+  <Project Path="src/ModerateAI.Infrastructure/ModerateAI.Infrastructure.csproj"/>
+  <Project Path="src/ModerateAI.Api/ModerateAI.Api.csproj"/>
+  <Project Path="src/ModerateAI.Ai/ModerateAI.Ai.csproj"/>
+  <Project Path="tests/ModerateAI.Tests/ModerateAI.Tests.csproj"/>
+</Solution>

@@ -1,0 +1,4 @@
+services:
+  ai:
+    volumes:
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
