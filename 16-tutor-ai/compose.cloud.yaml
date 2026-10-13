@@ -1,0 +1,13 @@
+services:
+  api:
+    build: {dockerfile: deploy/Api.Cloud.Dockerfile, secrets: [egress_ca]}
+  ai:
+    build: {dockerfile: deploy/Ai.Cloud.Dockerfile, secrets: [egress_ca]}
+  migrate:
+    build: {dockerfile: deploy/Api.Cloud.Dockerfile, secrets: [egress_ca]}
+    entrypoint: ["/app/TutorAI.Api"]
+  web:
+    build: {dockerfile: deploy/Web.Cloud.Dockerfile}
+secrets:
+  egress_ca:
+    file: /etc/ssl/certs/ca-certificates.crt

@@ -1,0 +1,12 @@
+artifacts/
+.dev/
+.env
+.env.*
+!.env.example
+*.user
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/test-results/
+**/playwright-report/

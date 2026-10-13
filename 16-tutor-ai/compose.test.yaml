@@ -1,0 +1,24 @@
+name: tutorai-tests
+services:
+  db:
+    image: postgres:17.6-alpine
+    environment: {POSTGRES_DB: tutorai_tests, POSTGRES_USER: tutorai, POSTGRES_PASSWORD: tutorai-test-password}
+    ports: ["127.0.0.1:54336:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tutorai -d tutorai_tests"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  minio:
+    environment:
+      NO_PROXY: localhost,127.0.0.1,db,minio,api,ai
+      no_proxy: localhost,127.0.0.1,db,minio,api,ai
+    image: chrislusf/seaweedfs:4.06@sha256:a064c6923daf4451c943cec2f437a67523d7792ee589089bc4d4c27a61d78dea
+    command: ["mini", "-dir=/data", "-ip=minio", "-ip.bind=0.0.0.0", "-s3.port=9000", "-s3.config=/etc/seaweedfs/s3.json", "-admin.ui=false", "-webdav=false", "-master.telemetry=false"]
+    ports: ["127.0.0.1:59016:9000"]
+    volumes: ["./.dev/s3-test.json:/etc/seaweedfs/s3.json:ro"]
+    healthcheck:
+      test: ["CMD", "wget", "-Y", "off", "-q", "-O", "/dev/null", "http://127.0.0.1:9333/cluster/status"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
