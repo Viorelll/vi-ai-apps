@@ -1,0 +1,111 @@
+name: moderateai
+x-storage: &storage
+  Storage__Endpoint: http://minio:9000
+  Storage__AccessKey: ${MINIO_ROOT_USER:?required}
+  Storage__SecretKey: ${MINIO_ROOT_PASSWORD:?required}
+  Storage__Bucket: moderateai
+x-api: &api
+  <<: *storage
+  ASPNETCORE_HTTP_PORTS: "8080"
+  ConnectionStrings__App: Host=db;Database=moderateai;Username=moderateai;Password=${DB_PASSWORD:?required}
+  Ai__BaseUrl: http://ai:8080/
+  Internal__Key: ${INTERNAL_API_KEY:?required}
+  NO_PROXY: localhost,127.0.0.1,db,minio,api,ai
+  no_proxy: localhost,127.0.0.1,db,minio,api,ai
+services:
+  db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: moderateai
+      POSTGRES_USER: moderateai
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?required}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U moderateai -d moderateai"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  minio:
+    image: chrislusf/seaweedfs:4.06@sha256:a064c6923daf4451c943cec2f437a67523d7792ee589089bc4d4c27a61d78dea
+    command: [mini, -dir=/data, -ip=minio, -ip.bind=0.0.0.0, -s3.port=9000, -s3.config=/etc/seaweedfs/s3.json, -admin.ui=false, -webdav=false, -master.telemetry=false]
+    volumes:
+      - objectdata:/data
+      - ./.dev/s3.json:/etc/seaweedfs/s3.json:ro
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, "http://127.0.0.1:9333/cluster/status"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  ai:
+    image: moderateai-ai
+    build:
+      context: .
+      dockerfile: deploy/Ai.Dockerfile
+    environment:
+      <<: *storage
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Internal__Key: ${INTERNAL_API_KEY:?required}
+      Provider__Mode: ${AI_MODE:-Demo}
+      Provider__SafetyEndpoint: ${CONTENT_SAFETY_ENDPOINT:-https://RESOURCE.cognitiveservices.azure.com/}
+      Provider__SafetyApiKey: ${CONTENT_SAFETY_API_KEY:-replace-with-safety-key}
+      Provider__OpenAiEndpoint: ${FOUNDRY_OPENAI_ENDPOINT:-https://RESOURCE.openai.azure.com/openai/v1/}
+      Provider__ApiKey: ${FOUNDRY_API_KEY:-replace-with-foundry-key}
+      Provider__ChatDeployment: ${CHAT_DEPLOYMENT:-moderateai-chat}
+      Provider__PromptShields: ${PROMPT_SHIELDS_ENABLED:-false}
+      HTTP_PROXY: ${HTTP_PROXY:-}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+      NO_PROXY: localhost,127.0.0.1,db,minio,api,ai
+      no_proxy: localhost,127.0.0.1,db,minio,api,ai
+    depends_on:
+      minio: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, /usr/local/bin/healthprobe, "http://127.0.0.1:8080/health/ready"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  migrate:
+    image: moderateai-api
+    build:
+      context: .
+      dockerfile: deploy/Api.Dockerfile
+    environment: *api
+    command: [--migrate]
+    depends_on:
+      db: {condition: service_healthy}
+    restart: "no"
+  api:
+    image: moderateai-api
+    build:
+      context: .
+      dockerfile: deploy/Api.Dockerfile
+    environment: *api
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      ai: {condition: service_healthy}
+      minio: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, /usr/local/bin/healthprobe, "http://127.0.0.1:8080/api/health"]
+      interval: 3s
+      timeout: 4s
+      retries: 30
+    restart: unless-stopped
+  web:
+    image: moderateai-web
+    build:
+      context: .
+      dockerfile: deploy/Web.Dockerfile
+    ports: ["127.0.0.1:${WEB_PORT:-8088}:80"]
+    depends_on:
+      api: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, "http://127.0.0.1/api/health"]
+      interval: 3s
+      timeout: 4s
+      retries: 30
+    restart: unless-stopped
+volumes:
+  pgdata:
+  objectdata:

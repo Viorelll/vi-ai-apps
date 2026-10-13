@@ -1,0 +1,42 @@
+name: ModerateAI
+on:
+  push:
+    paths: ["18-moderate-ai/**", ".github/workflows/moderateai.yml"]
+  pull_request:
+    paths: ["18-moderate-ai/**", ".github/workflows/moderateai.yml"]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: 18-moderate-ai
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.401"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: 18-moderate-ai/src/moderateai-web/package-lock.json
+      - run: dotnet restore ModerateAI.slnx --locked-mode
+      - run: dotnet tool restore
+      - run: dotnet csharpier check src tests
+      - run: dotnet build ModerateAI.slnx -c Release --no-restore
+      - run: dotnet test ModerateAI.slnx -c Release --no-build --filter 'Category!=Integration' --logger 'trx;LogFileName=unit.trx' --results-directory output/unit
+      - run: npm ci && npm run build && npm test && npm run format:check
+        working-directory: 18-moderate-ai/src/moderateai-web
+      - run: python3 scripts/create-env.py && python3 scripts/prepare-s3.py
+      - run: docker compose -f compose.yaml -f compose.test.yaml up -d --build --wait
+      - run: python3 scripts/readiness.py && python3 scripts/test-integration.py && python3 scripts/smoke.py
+      - run: npx playwright install --with-deps chromium && npm run test:e2e
+        working-directory: 18-moderate-ai/src/moderateai-web
+      - if: always()
+        run: docker compose -f compose.yaml -f compose.test.yaml down
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: moderateai-results
+          path: 18-moderate-ai/output/

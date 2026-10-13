@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="SkiaSharp" Version="4.153.1" />
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.153.1" />
+        <ProjectReference Include="../ModerateAI.Domain/ModerateAI.Domain.csproj" />
+        <ProjectReference Include="../ModerateAI.Database/ModerateAI.Database.csproj" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+</Project>

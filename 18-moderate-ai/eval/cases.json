@@ -1,0 +1,585 @@
+[
+  {
+    "name": "Hate-0",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "allow"
+  },
+  {
+    "name": "Hate-2",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 2
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "Hate-4",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 4
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "block"
+  },
+  {
+    "name": "Hate-6",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 6
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "block"
+  },
+  {
+    "name": "SelfHarm-0",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "allow"
+  },
+  {
+    "name": "SelfHarm-2",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 2
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "SelfHarm-4",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 4
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "block"
+  },
+  {
+    "name": "SelfHarm-6",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 6
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "block"
+  },
+  {
+    "name": "Sexual-0",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "allow"
+  },
+  {
+    "name": "Sexual-2",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 2
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "Sexual-4",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 4
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "block"
+  },
+  {
+    "name": "Sexual-6",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 6
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "block"
+  },
+  {
+    "name": "Violence-0",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "allow"
+  },
+  {
+    "name": "Violence-2",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 2
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "Violence-4",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 4
+      }
+    ],
+    "expected": "block"
+  },
+  {
+    "name": "Violence-6",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 6
+      }
+    ],
+    "expected": "block"
+  },
+  {
+    "name": "invalid--1",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": -1
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "invalid-1",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 1
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "invalid-3",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 3
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "invalid-5",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 5
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "invalid-7",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 7
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "invalid-8",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 8
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "invalid-100",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 100
+      }
+    ],
+    "expected": "review"
+  },
+  {
+    "name": "empty",
+    "scale": "FourSeverityLevels",
+    "complete": true,
+    "scores": [],
+    "expected": "review"
+  },
+  {
+    "name": "eight-levels",
+    "scale": "EightSeverityLevels",
+    "complete": true,
+    "scores": [
+      {
+        "category": "Hate",
+        "severity": 0
+      },
+      {
+        "category": "SelfHarm",
+        "severity": 0
+      },
+      {
+        "category": "Sexual",
+        "severity": 0
+      },
+      {
+        "category": "Violence",
+        "severity": 0
+      }
+    ],
+    "expected": "review"
+  }
+]
