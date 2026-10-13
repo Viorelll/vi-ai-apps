@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../AccessReadAI.Domain/AccessReadAI.Domain.csproj" />
+    <ProjectReference Include="../AccessReadAI.Contracts/AccessReadAI.Contracts.csproj" />
+    <ProjectReference Include="../AccessReadAI.Database/AccessReadAI.Database.csproj" />
+    <ProjectReference Include="../AccessReadAI.Infrastructure/AccessReadAI.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>

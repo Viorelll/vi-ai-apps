@@ -1,0 +1,102 @@
+[
+  {
+    "original": "Nu depășiți 1 unități.",
+    "variant": "Nu depășiți 1 unități.",
+    "valid": true
+  },
+  {
+    "original": "Nu depășiți 1 unități.",
+    "variant": "Depășiți 1 unități.",
+    "valid": false
+  },
+  {
+    "original": "Nu depășiți 1 unități.",
+    "variant": "Nu depășiți 2 unități.",
+    "valid": false
+  },
+  {
+    "original": "1 mg",
+    "variant": "1 g",
+    "valid": false
+  },
+  {
+    "original": "Nu depășiți 2 unități.",
+    "variant": "Nu depășiți 2 unități.",
+    "valid": true
+  },
+  {
+    "original": "Nu depășiți 2 unități.",
+    "variant": "Depășiți 2 unități.",
+    "valid": false
+  },
+  {
+    "original": "Nu depășiți 2 unități.",
+    "variant": "Nu depășiți 3 unități.",
+    "valid": false
+  },
+  {
+    "original": "2 mg",
+    "variant": "2 g",
+    "valid": false
+  },
+  {
+    "original": "Nu depășiți 5 unități.",
+    "variant": "Nu depășiți 5 unități.",
+    "valid": true
+  },
+  {
+    "original": "Nu depășiți 5 unități.",
+    "variant": "Depășiți 5 unități.",
+    "valid": false
+  },
+  {
+    "original": "Nu depășiți 5 unități.",
+    "variant": "Nu depășiți 6 unități.",
+    "valid": false
+  },
+  {
+    "original": "5 mg",
+    "variant": "5 g",
+    "valid": false
+  },
+  {
+    "original": "Nu depășiți 10 unități.",
+    "variant": "Nu depășiți 10 unități.",
+    "valid": true
+  },
+  {
+    "original": "Nu depășiți 10 unități.",
+    "variant": "Depășiți 10 unități.",
+    "valid": false
+  },
+  {
+    "original": "Nu depășiți 10 unități.",
+    "variant": "Nu depășiți 11 unități.",
+    "valid": false
+  },
+  {
+    "original": "10 mg",
+    "variant": "10 g",
+    "valid": false
+  },
+  {
+    "original": "Nu depășiți 20 unități.",
+    "variant": "Nu depășiți 20 unități.",
+    "valid": true
+  },
+  {
+    "original": "Nu depășiți 20 unități.",
+    "variant": "Depășiți 20 unități.",
+    "valid": false
+  },
+  {
+    "original": "Nu depășiți 20 unități.",
+    "variant": "Nu depășiți 21 unități.",
+    "valid": false
+  },
+  {
+    "original": "20 mg",
+    "variant": "20 g",
+    "valid": false
+  }
+]

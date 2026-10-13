@@ -1,0 +1,10 @@
+.env
+.dev/
+artifacts/
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+*.tsbuildinfo
+test-results/
+playwright-report/

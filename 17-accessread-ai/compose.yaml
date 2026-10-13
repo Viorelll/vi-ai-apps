@@ -1,0 +1,78 @@
+name: accessreadai
+x-storage: &storage
+  Storage__Endpoint: http://minio:9000
+  Storage__AccessKey: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER}
+  Storage__SecretKey: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+  Storage__Bucket: accessreadai
+x-api-env: &api-env
+  <<: *storage
+  ASPNETCORE_HTTP_PORTS: "8080"
+  ConnectionStrings__App: Host=db;Database=accessreadai;Username=accessreadai;Password=${DB_PASSWORD:?set DB_PASSWORD}
+  Ai__BaseUrl: http://ai:8080/
+  Internal__Key: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: accessreadai
+      POSTGRES_USER: accessreadai
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U accessreadai -d accessreadai"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  minio:
+    image: chrislusf/seaweedfs:4.06@sha256:a064c6923daf4451c943cec2f437a67523d7792ee589089bc4d4c27a61d78dea
+    command: ["mini", "-dir=/data", "-ip=minio", "-ip.bind=0.0.0.0", "-s3.port=9000", "-s3.config=/etc/seaweedfs/s3.json", "-admin.ui=false", "-webdav=false", "-master.telemetry=false"]
+    volumes: ["objectdata:/data", "./.dev/s3.json:/etc/seaweedfs/s3.json:ro"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:9333/cluster/status"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  ai:
+    build: {context: ., dockerfile: deploy/Ai.Dockerfile}
+    environment:
+      <<: *storage
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Internal__Key: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
+      Provider__Demo: ${DEMO_MODE:-true}
+      Provider__FoundryEndpoint: ${FOUNDRY_OPENAI_ENDPOINT}
+      Provider__FoundryKey: ${FOUNDRY_API_KEY}
+      Provider__Deployment: ${CHAT_DEPLOYMENT}
+      Provider__LayoutEndpoint: ${LAYOUT_ENDPOINT}
+      Provider__LayoutKey: ${LAYOUT_API_KEY}
+      Provider__TranslatorEndpoint: ${TRANSLATOR_ENDPOINT}
+      Provider__TranslatorKey: ${TRANSLATOR_API_KEY}
+      Provider__TranslatorRegion: ${TRANSLATOR_REGION}
+      Provider__SpeechEndpoint: ${SPEECH_TTS_ENDPOINT}
+      Provider__SpeechKey: ${SPEECH_API_KEY}
+    depends_on: {minio: {condition: service_healthy}}
+    restart: unless-stopped
+  migrate:
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    environment: *api-env
+    command: ["--migrate"]
+    depends_on: {db: {condition: service_healthy}}
+    restart: "no"
+  api:
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    environment: *api-env
+    depends_on:
+      db: {condition: service_healthy}
+      migrate: {condition: service_completed_successfully}
+      minio: {condition: service_healthy}
+      ai: {condition: service_started}
+    restart: unless-stopped
+  web:
+    build: {context: ., dockerfile: deploy/Web.Dockerfile}
+    ports: ["127.0.0.1:8080:80"]
+    depends_on: [api]
+    restart: unless-stopped
+volumes:
+  pgdata:
+  objectdata:

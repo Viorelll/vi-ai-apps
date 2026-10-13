@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../AccessReadAI.Contracts/AccessReadAI.Contracts.csproj" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.104.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>

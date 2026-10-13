@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AccessReadAI.Ai/AccessReadAI.Ai.csproj" />
+    <Project Path="src/AccessReadAI.Api/AccessReadAI.Api.csproj" />
+    <Project Path="src/AccessReadAI.Contracts/AccessReadAI.Contracts.csproj" />
+    <Project Path="src/AccessReadAI.Database/AccessReadAI.Database.csproj" />
+    <Project Path="src/AccessReadAI.Domain/AccessReadAI.Domain.csproj" />
+    <Project Path="src/AccessReadAI.Infrastructure/AccessReadAI.Infrastructure.csproj" />
+    <Project Path="src/AccessReadAI.Services/AccessReadAI.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AccessReadAI.Tests/AccessReadAI.Tests.csproj" />
+  </Folder>
+</Solution>
