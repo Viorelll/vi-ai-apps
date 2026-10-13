@@ -1,0 +1,12 @@
+.env
+.local/
+artifacts/
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/test-results/
+**/playwright-report/
+*.tsbuildinfo
+
+.cache/

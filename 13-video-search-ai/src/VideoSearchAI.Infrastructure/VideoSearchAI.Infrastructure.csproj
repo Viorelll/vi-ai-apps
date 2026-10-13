@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../VideoSearchAI.Contracts/VideoSearchAI.Contracts.csproj" />
+    <ProjectReference Include="../VideoSearchAI.Domain/VideoSearchAI.Domain.csproj" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.19.1" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>

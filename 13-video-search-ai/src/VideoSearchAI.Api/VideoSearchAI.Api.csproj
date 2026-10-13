@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../VideoSearchAI.Services/VideoSearchAI.Services.csproj" />
+    <PackageReference
+      Include="Microsoft.EntityFrameworkCore.Design"
+      Version="10.0.4"
+      PrivateAssets="all"
+    />
+  </ItemGroup>
+</Project>

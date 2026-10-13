@@ -1,0 +1,107 @@
+name: videosearchai
+x-common: &common
+  NO_PROXY: api,ai,db,minio,localhost,127.0.0.1
+  no_proxy: api,ai,db,minio,localhost,127.0.0.1
+x-storage: &storage
+  Storage__Endpoint: http://minio:9000
+  Storage__AccessKey: ${MINIO_ROOT_USER:-demo-minio}
+  Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-demo-minio-password}
+  Storage__Bucket: videosearchai
+x-api-env: &api-env
+  <<: [*common, *storage]
+  ConnectionStrings__App: Host=db;Database=videosearchai;Username=videosearchai;Password=${DB_PASSWORD:-demo-db-password}
+  ASPNETCORE_HTTP_PORTS: "8080"
+  Ai__BaseUrl: http://ai:8080/
+  Ai__InternalKey: ${INTERNAL_API_KEY:-dummy-internal-key-change-me}
+  Ai__Mode: ${AI_MODE:-Demo}
+services:
+  db:
+    image: postgres:17.6
+    environment:
+      POSTGRES_DB: videosearchai
+      POSTGRES_USER: videosearchai
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-demo-db-password}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U videosearchai -d videosearchai"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  minio:
+    image: videosearchai-minio:local
+    build: {context: ., dockerfile: deploy/Minio.Dockerfile}
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-demo-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-demo-minio-password}
+    volumes: [objectdata:/data]
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:9000/minio/health/live]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  ai:
+    image: videosearchai-ai:latest
+    build: {context: ., dockerfile: deploy/Ai.Dockerfile}
+    environment:
+      <<: [*common, *storage]
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Ai__Mode: ${AI_MODE:-Demo}
+      Ai__InternalKey: ${INTERNAL_API_KEY:-dummy-internal-key-change-me}
+      Ai__DemoSeedHash: a9c580e4cfc980068c3d40c1c03e2c6bc7d15098c61c0b56c86d71bed347ada6
+      Ai__OpenAiEndpoint: ${FOUNDRY_ENDPOINT:-https://DUMMY.openai.azure.com/openai/v1/}
+      Ai__ApiKey: ${FOUNDRY_API_KEY:-DUMMY}
+      Ai__ChatDeployment: ${FOUNDRY_CHAT_DEPLOYMENT:-gpt-4.1-mini}
+      Ai__EmbeddingDeployment: ${FOUNDRY_EMBEDDING_DEPLOYMENT:-text-embedding-3-small}
+      Ai__ContentEndpoint: ${CU_ENDPOINT:-https://DUMMY.cognitiveservices.azure.com/}
+      Ai__ContentKey: ${CU_API_KEY:-DUMMY}
+      Ai__AnalyzerId: ${CU_ANALYZER_ID:-prebuilt-videoSearch}
+      Ai__SearchEndpoint: ${SEARCH_ENDPOINT:-https://DUMMY.search.windows.net/}
+      Ai__SearchKey: ${SEARCH_API_KEY:-DUMMY}
+      Ai__SearchIndex: ${SEARCH_INDEX:-videosearchai-v1}
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8080/health/ready]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    depends_on:
+      minio: {condition: service_healthy}
+    restart: unless-stopped
+  migrate:
+    image: videosearchai-api:latest
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    command: [--migrate]
+    environment: *api-env
+    depends_on:
+      db: {condition: service_healthy}
+      minio: {condition: service_healthy}
+    restart: "no"
+  api:
+    image: videosearchai-api:latest
+    build: {context: ., dockerfile: deploy/Api.Dockerfile}
+    environment: *api-env
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8080/health/ready]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      ai: {condition: service_healthy}
+    restart: unless-stopped
+  web:
+    image: videosearchai-web:latest
+    build: {context: ., dockerfile: deploy/Web.Dockerfile}
+    ports: ["127.0.0.1:${WEB_PORT:-8080}:8080"]
+    depends_on:
+      api: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://127.0.0.1:8080/]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+volumes:
+  pgdata:
+  objectdata:
